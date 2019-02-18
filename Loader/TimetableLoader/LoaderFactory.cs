@@ -3,29 +3,44 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using CifParser;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace TimetableLoader
 {
     interface IFactory
     {
-        IEnumerable<IRecordLoader> CreateLoaders();
         CifLoader Create();
-
+        IExtractor CreateExtractor();
+        IParser CreateParser();
+        ILoader CreateLoader(SqlConnection connection);
+        SqlConnection CreateConnection();
     }
 
     internal class Factory : IFactory
     {
-        private readonly SqlConnection _connection;
- 
-        internal Factory(SqlConnection connection)
+        private readonly IConfiguration _config;     
+        public string ConnectionString => _config["connection"];    
+        
+        internal Factory(IConfiguration config)
         {
-            _connection = connection;
+            _config = config;
+        }    
+        
+        public IExtractor CreateExtractor() => new ZipExtractor();
+        public IParser CreateParser() => new ScheduleConsolidator(new Parser());
+        public SqlConnection CreateConnection() => new SqlConnection(ConnectionString);
+
+        public ILoader CreateLoader(SqlConnection connection)
+        {
+            return new BulkLoader(
+                CreateLoaders(connection),
+                Log.Logger);
         }
 
-        public IEnumerable<IRecordLoader> CreateLoaders()
+        private IEnumerable<IRecordLoader> CreateLoaders(SqlConnection connection)
         {
-            var locationLoader = new LocationLoader(_connection, new Sequence());
+            var locationLoader = new LocationLoader(connection, new Sequence());
             locationLoader.CreateDataTable();
             
             return new IRecordLoader[]
@@ -36,10 +51,7 @@ namespace TimetableLoader
 
         public CifLoader Create()
         {
-            return new CifLoader(
-                new ZipExtractor(), 
-                new ScheduleConsolidator(new Parser()),
-                new BulkLoader(CreateLoaders(), Log.Logger));
+            return new CifLoader(this);
         }
     }
 }
