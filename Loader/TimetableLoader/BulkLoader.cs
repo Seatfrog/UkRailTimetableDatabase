@@ -30,13 +30,19 @@ namespace TimetableLoader
             {
                 try
                 {
+                    var handled = false;
+                    
                     foreach (var loader in _recordLoaders)
                     {
-                        if(loader.Add(record))
+                        if (loader.Add(record))
+                        {
+                            handled = true;
                             break;
-                    }
+                        }
+                     }
                     
-                    _logger.Warning("Unknown record {recordType} : {record}", record.GetType(), record);
+                    if(!handled)
+                        _logger.Warning("Unknown record {recordType} : {record}", record.GetType(), record);
                 }
                 catch (Exception e)
                 {

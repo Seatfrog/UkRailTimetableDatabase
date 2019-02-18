@@ -1,25 +1,27 @@
+using System.Data.SqlClient;
 using CifParser;
 
 namespace TimetableLoader
 {
     internal class CifLoader
     {
-        private IExtractor _extractor;
-        private IParser _parser;
-        private ILoader _loader;
+        private IFactory _factory;
 
-        internal CifLoader(IExtractor extractor, IParser parser, ILoader loader)
+        internal CifLoader(IFactory factory)
         {
-            _extractor = extractor;
-            _parser = parser;
-            _loader = loader;
+            _factory = factory;
         }
 
         public void Run(Options options)
         {
-            var reader = _extractor.ExtractCif(options.TimetableFile);
-            var records = _parser.Read(reader);
-            _loader.Load(records);
+            using (var connection = _factory.CreateConnection())
+            {
+                connection.Open();
+                var reader = _factory.CreateExtractor().ExtractCif(options.TimetableFile);
+                var records = _factory.CreateParser().Read(reader);
+                var loader = _factory.CreateLoader(connection);
+                loader.Load(records);                
+            }
         }
     }
 }

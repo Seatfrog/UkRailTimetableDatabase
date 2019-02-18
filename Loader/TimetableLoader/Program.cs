@@ -13,28 +13,32 @@ namespace TimetableLoader
         static void Main(string[] args)
         {
             ConfigureLogging();
-            ConfigureApp();
+            var config = ConfigureApp();
 
-            CommandLine.Parser.Default.ParseArguments<Options>(args)
-                .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts))
-                .WithNotParsed<Options>((errs) => HandleParseError(errs));
+            try
+            {
+                CommandLine.Parser.Default.ParseArguments<Options>(args)
+                    .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts, config))
+                    .WithNotParsed<Options>((errs) => HandleParseError(errs));
+            }
+            finally
+            {
+                Log.CloseAndFlush();                
+            }
+
         }
 
-        private static void RunOptionsAndReturnExitCode(Options opts)
+        private static void RunOptionsAndReturnExitCode(Options opts, IConfiguration config)
         {
             try
             {
-                using (var connection = new SqlConnection(ConnectionString))
-                {
-                    connection.Open();
-                    Log.Information("Configure Loader");
-                    var factory = new Factory(connection);
-                    var loader = factory.Create();
+                Log.Information("Configure Loader");
+                var factory = new Factory(config);
+                var loader = factory.Create();
 
-                    Log.Information("Uncompress, Parse and Load timetable");
-                    loader.Run(opts);
-                    Log.Information("{file} loaded", opts.TimetableFile);
-                }
+                Log.Information("Uncompress, Parse and Load timetable");
+                loader.Run(opts);
+                Log.Information("{file} loaded", opts.TimetableFile);
             }
             catch (Exception e)
             {
@@ -43,13 +47,9 @@ namespace TimetableLoader
             }
         }
 
-        private static IConfiguration Config { get; set; }
-
-        private static string ConnectionString => Config["connection"];
-
-        private static void ConfigureApp()
+        private static IConfiguration ConfigureApp()
         {
-            Config = new ConfigurationBuilder()
+            return new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
         }
@@ -61,7 +61,6 @@ namespace TimetableLoader
                 Log.Error(error.ToString());
             }
         }
-
 
         private static void ConfigureLogging()
         {
