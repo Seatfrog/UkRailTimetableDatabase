@@ -13,10 +13,10 @@ namespace TimetableLoaderTest
         [Fact]
         public void AddRecordInFirstLoader()
         {
-            var loader1 = Substitute.For<ILoader>();
+            var loader1 = Substitute.For<IRecordLoader>();
             loader1.Add(Arg.Any<ICifRecord>()).Returns(true);
             
-            var loader2 = Substitute.For<ILoader>();
+            var loader2 = Substitute.For<IRecordLoader>();
             
             var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
             
@@ -29,10 +29,10 @@ namespace TimetableLoaderTest
         [Fact]
         public void AddRecordInSecondLoader()
         {
-            var loader1 = Substitute.For<ILoader>();
+            var loader1 = Substitute.For<IRecordLoader>();
             loader1.Add(Arg.Any<ICifRecord>()).Returns(false);
             
-            var loader2 = Substitute.For<ILoader>();
+            var loader2 = Substitute.For<IRecordLoader>();
             loader2.Add(Arg.Any<ICifRecord>()).Returns(true);
            
             var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
@@ -46,10 +46,10 @@ namespace TimetableLoaderTest
         public void DropThroughLogsWarning()
         {
             var logger = Substitute.For<ILogger>();
-            var loader1 = Substitute.For<ILoader>();
+            var loader1 = Substitute.For<IRecordLoader>();
             loader1.Add(Arg.Any<ICifRecord>()).Returns(false);
             
-            var loader2 = Substitute.For<ILoader>();
+            var loader2 = Substitute.For<IRecordLoader>();
             loader2.Add(Arg.Any<ICifRecord>()).Returns(false);
            
             var loader = new BulkLoader(new [] { loader1, loader2}, logger);
@@ -62,10 +62,10 @@ namespace TimetableLoaderTest
         [Fact]
         public void ProcessesAllRecords()
         {
-            var loader1 = Substitute.For<ILoader>();
+            var loader1 = Substitute.For<IRecordLoader>();
             loader1.Add(Arg.Any<ICifRecord>()).Returns(true, false);
             
-            var loader2 = Substitute.For<ILoader>();
+            var loader2 = Substitute.For<IRecordLoader>();
             loader2.Add(Arg.Any<ICifRecord>()).Returns(true);
             
             var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
@@ -80,10 +80,10 @@ namespace TimetableLoaderTest
         [Fact]
         public void ThrowsExceptionOnAnyError_TODO_CHANGE_THIS_BEHAVIOR()
         {
-            var loader1 = Substitute.For<ILoader>();
+            var loader1 = Substitute.For<IRecordLoader>();
             loader1.Add(Arg.Any<ICifRecord>()).Returns(x => throw new Exception(), x => true);
             
-            var loader2 = Substitute.For<ILoader>();
+            var loader2 = Substitute.For<IRecordLoader>();
             loader2.Add(Arg.Any<ICifRecord>()).Returns(true);
             
             var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());

@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 
 namespace TimetableLoader
 {
-    public interface ILoader
+    public interface IRecordLoader
     {
         /// <summary>
         /// Add a record to the DataTable
@@ -42,7 +42,7 @@ namespace TimetableLoader
     /// </item>
     /// </list>
     /// </remarks>
-    internal class LocationLoader : ILoader
+    internal class LocationLoader : IRecordLoader
     {
         private readonly SqlConnection _connection;
         private readonly Sequence _sequence;

@@ -2,29 +2,44 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using CifParser;
+using Serilog;
 
 namespace TimetableLoader
 {
-    interface ILoaderFactory
+    interface IFactory
     {
-        IEnumerable<ILoader> CreateLoaders();
+        IEnumerable<IRecordLoader> CreateLoaders();
+        CifLoader Create();
+
     }
 
-    internal class LoaderFactory : ILoaderFactory
+    internal class Factory : IFactory
     {
-        private SqlConnection _connection;
+        private readonly SqlConnection _connection;
  
-        LoaderFactory(SqlConnection connection)
+        internal Factory(SqlConnection connection)
         {
             _connection = connection;
         }
 
-        public IEnumerable<ILoader> CreateLoaders()
+        public IEnumerable<IRecordLoader> CreateLoaders()
         {
-            return new ILoader[]
+            var locationLoader = new LocationLoader(_connection, new Sequence());
+            locationLoader.CreateDataTable();
+            
+            return new IRecordLoader[]
             {
-                new LocationLoader(_connection, new Sequence())
+                locationLoader
             };
+        }
+
+        public CifLoader Create()
+        {
+            return new CifLoader(
+                new ZipExtractor(), 
+                new ScheduleConsolidator(new Parser()),
+                new BulkLoader(CreateLoaders(), Log.Logger));
         }
     }
 }

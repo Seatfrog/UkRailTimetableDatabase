@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
+using CommandLine;
 
 namespace TimetableLoader
 {
@@ -10,15 +13,55 @@ namespace TimetableLoader
         static void Main(string[] args)
         {
             ConfigureLogging();
+            ConfigureApp();
 
-            var config = new ConfigurationBuilder()
+            CommandLine.Parser.Default.ParseArguments<Options>(args)
+                .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts))
+                .WithNotParsed<Options>((errs) => HandleParseError(errs));
+        }
+
+        private static void RunOptionsAndReturnExitCode(Options opts)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(ConnectionString))
+                {
+                    connection.Open();
+                    Log.Information("Configure Loader");
+                    var factory = new Factory(connection);
+                    var loader = factory.Create();
+
+                    Log.Information("Uncompress, Parse and Load timetable");
+                    loader.Run(opts);
+                    Log.Information("{file} loaded", opts.TimetableFile);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "Processing failed for {file}", opts.TimetableFile);
+                throw;
+            }
+        }
+
+        private static IConfiguration Config { get; set; }
+
+        private static string ConnectionString => Config["connection"];
+
+        private static void ConfigureApp()
+        {
+            Config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
-
-            var connString = config["connection"];
-            Console.WriteLine($"connection: {connString}");
-            Console.ReadLine();
         }
+
+        private static void HandleParseError(IEnumerable<Error> errs)
+        {
+            foreach (var error in errs)
+            {
+                Log.Error(error.ToString());
+            }
+        }
+
 
         private static void ConfigureLogging()
         {
@@ -26,10 +69,11 @@ namespace TimetableLoader
                 .Enrich.FromLogContext()
                 .MinimumLevel.Debug()
                 .Destructure.ByTransforming<CifParser.Records.Tiploc>(
-                    r => new { r.Code, r.Action })
+                    r => new {r.Code, r.Action})
                 .WriteTo.Console()
                 .WriteTo.File(@"TimetableLoader-.log",
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u4}] {Message:lj} {Exception} {Properties}{NewLine}",
+                    outputTemplate:
+                    "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u4}] {Message:lj} {Exception} {Properties}{NewLine}",
                     rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 

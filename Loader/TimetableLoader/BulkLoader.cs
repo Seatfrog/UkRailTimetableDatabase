@@ -7,13 +7,18 @@ using Serilog;
 
 namespace TimetableLoader
 {
-    internal class BulkLoader
+    internal interface ILoader
+    {
+        void Load(IEnumerable<ICifRecord> records);
+    }
+
+    internal class BulkLoader : ILoader
     {
         private ILogger _logger;
 
-        private IEnumerable<ILoader> _recordLoaders;
+        private IEnumerable<IRecordLoader> _recordLoaders;
 
-        public BulkLoader(IEnumerable<ILoader> recordLoaders, ILogger logger)
+        public BulkLoader(IEnumerable<IRecordLoader> recordLoaders, ILogger logger)
         {
             _recordLoaders = recordLoaders;
             _logger = logger;
@@ -39,6 +44,11 @@ namespace TimetableLoader
                     throw;    // Initially blowup as want to learn about errors.
                     //TODO Change to continue processing when know more about errors
                 }              
+            }
+
+            foreach (var loader in _recordLoaders)
+            {
+                loader.Load(null);
             }
         }
     }
