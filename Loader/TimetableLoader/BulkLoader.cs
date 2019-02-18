@@ -23,13 +23,22 @@ namespace TimetableLoader
         {            
             foreach (var record in records)
             {
-                foreach (var loader in _recordLoaders)
+                try
                 {
-                    if(loader.Add(record))
-                        break;
+                    foreach (var loader in _recordLoaders)
+                    {
+                        if(loader.Add(record))
+                            break;
+                    }
+                    
+                    _logger.Warning("Unknown record {recordType} : {record}", record.GetType(), record);
                 }
-                
-                _logger.Warning("Unknown record {recordType} : {record}", record.GetType(), record);
+                catch (Exception e)
+                {
+                    _logger.Error(e, "Error loading record {recordType} : {record}", record.GetType(), record);
+                    throw;    // Initially blowup as want to learn about errors.
+                    //TODO Change to continue processing when know more about errors
+                }              
             }
         }
     }

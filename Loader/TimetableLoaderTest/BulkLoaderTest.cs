@@ -9,9 +9,7 @@ using Xunit;
 namespace TimetableLoaderTest
 {
     public class BulkLoaderTest
-    {
-        
-        
+    {      
         [Fact]
         public void AddRecordInFirstLoader()
         {
@@ -59,6 +57,41 @@ namespace TimetableLoaderTest
             loader.Load(new ICifRecord[] { new Header() });
 
             logger.ReceivedWithAnyArgs().Warning<Type, ICifRecord>(messageTemplate: null, propertyValue0: null, propertyValue1: null);
+        }
+        
+        [Fact]
+        public void ProcessesAllRecords()
+        {
+            var loader1 = Substitute.For<ILoader>();
+            loader1.Add(Arg.Any<ICifRecord>()).Returns(true, false);
+            
+            var loader2 = Substitute.For<ILoader>();
+            loader2.Add(Arg.Any<ICifRecord>()).Returns(true);
+            
+            var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
+            
+           loader.Load(new ICifRecord[] { new Header(), new Trailer() });
+
+            loader1.ReceivedWithAnyArgs().Add(null);
+            loader2.ReceivedWithAnyArgs().Add(null);
+        }
+        
+        
+        [Fact]
+        public void ThrowsExceptionOnAnyError_TODO_CHANGE_THIS_BEHAVIOR()
+        {
+            var loader1 = Substitute.For<ILoader>();
+            loader1.Add(Arg.Any<ICifRecord>()).Returns(x => throw new Exception(), x => true);
+            
+            var loader2 = Substitute.For<ILoader>();
+            loader2.Add(Arg.Any<ICifRecord>()).Returns(true);
+            
+            var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
+            
+            Assert.Throws<Exception>(() => loader.Load(new ICifRecord[] { new Header(), new Trailer() }));
+
+            loader1.ReceivedWithAnyArgs().Add(null);
+            loader2.DidNotReceiveWithAnyArgs().Add(null);
         }
     }
 }
