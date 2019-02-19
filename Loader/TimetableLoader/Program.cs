@@ -13,10 +13,11 @@ namespace TimetableLoader
         static void Main(string[] args)
         {
             ConfigureLogging();
-            var config = ConfigureApp();
 
             try
             {
+                var config = ConfigureApp();
+                
                 CommandLine.Parser.Default.ParseArguments<Options>(args)
                     .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts, config))
                     .WithNotParsed<Options>((errs) => HandleParseError(errs));
@@ -33,9 +34,9 @@ namespace TimetableLoader
             try
             {
                 Log.Information("Configure Loader");
-                var factory = new Factory(config);
+                var factory = new Factory(config, Log.Logger);
                 var loader = factory.Create();
-
+              
                 Log.Information("Uncompress, Parse and Load timetable");
                 loader.Run(opts);
                 Log.Information("{file} loaded", opts.TimetableFile);
