@@ -11,7 +11,7 @@ namespace TimetableLoaderTest
 {
     public class LocationLoaderTest : IClassFixture<IntegrationFixture>
     {
-        private const string _records =
+        private const string Records =
 @"TIPRNC84800932885DEDINBURGH SIGNAL 848      04305   0                           
 TIPRNC88400932884CEDINBURGH SIGNAL 844      04310   0                           
 TAWROX14 00732701NWROXHOVETON & WROXHAM SIG 48032   0                           
@@ -44,7 +44,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
         [Fact]
         public void AddInsert()
         {
-            var records = ParserHelper.ParseRecords(_records);
+            var records = ParserHelper.ParseRecords(Records);
 
             using (var connection = _fixture.CreateConnection())
             {
@@ -70,7 +70,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
         [Fact]
         public void AddAmend()
         {
-            var records = ParserHelper.ParseRecords(_records);
+            var records = ParserHelper.ParseRecords(Records);
 
             using (var connection = _fixture.CreateConnection())
             {
@@ -96,7 +96,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
         [Fact]
         public void AddDelete()
         {
-            var records = ParserHelper.ParseRecords(_records);
+            var records = ParserHelper.ParseRecords(Records);
 
             using (var connection = _fixture.CreateConnection())
             {
@@ -122,7 +122,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
         [Fact]
         public void OtherRecordsNotAdded()
         {
-            var records = ParserHelper.ParseRecords(_records);
+            var records = ParserHelper.ParseRecords(Records);
 
             using (var connection = _fixture.CreateConnection())
             {
@@ -139,7 +139,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
         [Fact]
         public void CreatesLookup()
         {
-            var records = ParserHelper.ParseRecords(_records);
+            var records = ParserHelper.ParseRecords(Records);
             var expected = records.OfType<Tiploc>().Select(r => r.Code);
 
             using (var connection = _fixture.CreateConnection())
@@ -149,11 +149,8 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                 loader.CreateDataTable();
 
                 foreach (var record in records)
-                {
-                    var tiploc = record as Tiploc;
-                    loader.Add(tiploc);
-                }
-
+                    loader.Add(record);
+                
                 Assert.All(expected, t => Assert.True(loader.Lookup.ContainsKey(t)));
             }
         }
@@ -161,7 +158,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
         [Fact]
         public void LoadIntoDatabase()
         {
-            var records = ParserHelper.ParseRecords(_records);
+            var records = ParserHelper.ParseRecords(Records);
 
             using (var connection = _fixture.CreateConnection())
             {
@@ -170,7 +167,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                 loader.CreateDataTable();
 
                 foreach (var record in records)
-                    loader.Add(record as Tiploc);
+                    loader.Add(record);
 
                 using (var transaction = connection.BeginTransaction())
                 {
