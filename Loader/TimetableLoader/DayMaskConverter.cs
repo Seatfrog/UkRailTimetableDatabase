@@ -17,5 +17,12 @@ namespace TimetableLoader
            
             return val;
         }
+
+        public static object ConvertBankHoliday(string bankHolidayFlag, bool isCancelOrDelete)
+        {
+            return isCancelOrDelete && string.IsNullOrWhiteSpace(bankHolidayFlag) ?
+                (object) DBNull.Value : 
+                bankHolidayFlag;
+        }
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using NSubstitute;
+using Serilog;
 using TimetableLoader;
 using Xunit;
 
@@ -50,7 +52,7 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, null);
+                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
                 var table = loader.Table;
 
@@ -67,7 +69,7 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence());
+                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
                 Assert.True(loader.Add(records[0]));
@@ -110,7 +112,7 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence());
+                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
                 
                 Assert.True(loader.Add(records[1]));
@@ -142,11 +144,7 @@ ZZ                                                                              
                 Assert.Equal(DBNull.Value, row["EuropeanUic"]);                
                 Assert.Equal("GW", row["Toc"]);                
                 Assert.Equal(false, row["ApplicableTimetable"]);                
-                Assert.Equal(DBNull.Value, row["RetailServiceId"]);
-                
-                // BSRC564831910261912140000010 POO2P94    125473001 DMUS   075      S            O
-                // BX         GWN                                                                  
-
+                Assert.Equal(DBNull.Value, row["RetailServiceId"]);                                                       
             }
         }
 
@@ -158,7 +156,7 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence());
+                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
                 
                 Assert.True(loader.Add(records[2]));
@@ -183,7 +181,7 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence());
+                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
                 
                 Assert.False(loader.Add(records[3]));
@@ -200,7 +198,7 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence());
+                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
                 foreach (var record in records)
