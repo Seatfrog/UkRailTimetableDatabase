@@ -54,7 +54,7 @@ namespace TimetableLoader
         /// </summary>
         internal IDictionary<string, int> Lookup { get; } = new Dictionary<string, int>();
 
-        public LocationLoader(SqlConnection connection, Sequence sequence)
+        internal LocationLoader(SqlConnection connection, Sequence sequence)
         {
             _connection = connection;
             _sequence = sequence;
@@ -63,7 +63,7 @@ namespace TimetableLoader
         /// <summary>
         /// Create the DataTable to load the records into
         /// </summary>
-        public void CreateDataTable()
+        internal void CreateDataTable()
         {
             var table = new DataTable();
 

@@ -52,9 +52,10 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
+                var schedules = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
+                var loader = new ScheduleLoader(schedules, Substitute.For<ILogger>());
                 loader.CreateDataTable();
-                var table = loader.Table;
+                var table = schedules.Table;
 
                 Assert.Equal(27, table.Columns.Count);
                 Assert.NotNull(table.Columns["TimetableUid"]);
@@ -69,39 +70,18 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                var loader = InitialiseLoader(connection);
 
-                Assert.True(loader.Add(records[0]));
-                var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
-                Assert.Equal("C", row["Action"]);
-                Assert.Equal("P", row["StpIndicator"]);
-                Assert.Equal("C55855", row["TimetableUid"]);
-                Assert.Equal(new DateTime(2019, 10, 26), row["RunsFrom"]);
-                Assert.Equal(new DateTime(2019, 12, 14), row["RunsTo"]);
-                Assert.Equal((byte) 32, row["DayMask"]);
-                Assert.Equal("", row["BankHolidayRunning"]);
-                Assert.Equal("P", row["Status"]);
-                Assert.Equal("EE", row["Category"]);
-                Assert.Equal("5P92", row["TrainIdentity"]);
-                Assert.Equal(DBNull.Value, row["NrsHeadCode"]);
-                Assert.Equal("25476001", row["ServiceCode"]);
-                Assert.Equal(DBNull.Value, row["PortionId"]);                
-                Assert.Equal("DMU", row["PowerType"]);                
-                Assert.Equal("S", row["TimingLoadType"]);                
-                Assert.Equal(75, row["Speed"]);
-                Assert.Equal(DBNull.Value, row["OperatingCharacteristics"]);                
-                Assert.Equal("B", row["SeatClass"]);                
-                Assert.Equal(DBNull.Value, row["SleeperClass"]);                
-                Assert.Equal("", row["ReservationIndicator"]);                
-                Assert.Equal(DBNull.Value, row["Catering"]);                
-                Assert.Equal(DBNull.Value, row["Branding"]);                
-                Assert.Equal(DBNull.Value, row["EuropeanUic"]);                
-                Assert.Equal("GW", row["Toc"]);                
-                Assert.Equal(true, row["ApplicableTimetable"]);                
-                Assert.Equal(DBNull.Value, row["RetailServiceId"]);                
+                Assert.True(loader.Add(records[0]));             
             }
+        }
+
+        private ScheduleLoader InitialiseLoader(SqlConnection connection)
+        {
+            var schedules = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
+            var loader = new ScheduleLoader(schedules, Substitute.For<ILogger>());
+            loader.CreateDataTable();
+            return loader;
         }
 
         [Fact]
@@ -112,39 +92,9 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                var loader = InitialiseLoader(connection);
                 
-                Assert.True(loader.Add(records[1]));
-
-                var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
-                Assert.Equal("U", row["Action"]);
-                Assert.Equal("O", row["StpIndicator"]);
-                Assert.Equal("C56483", row["TimetableUid"]);
-                Assert.Equal(new DateTime(2019, 10, 26), row["RunsFrom"]);
-                Assert.Equal(new DateTime(2019, 12, 14), row["RunsTo"]);
-                Assert.Equal((byte) 32, row["DayMask"]);
-                Assert.Equal("", row["BankHolidayRunning"]);
-                Assert.Equal("P", row["Status"]);
-                Assert.Equal("OO", row["Category"]);
-                Assert.Equal("2P94", row["TrainIdentity"]);
-                Assert.Equal(DBNull.Value, row["NrsHeadCode"]);
-                Assert.Equal("25473001", row["ServiceCode"]);
-                Assert.Equal(DBNull.Value, row["PortionId"]);                
-                Assert.Equal("DMU", row["PowerType"]);                
-                Assert.Equal("S", row["TimingLoadType"]);                
-                Assert.Equal(75, row["Speed"]);
-                Assert.Equal(DBNull.Value, row["OperatingCharacteristics"]);                
-                Assert.Equal("S", row["SeatClass"]);                
-                Assert.Equal(DBNull.Value, row["SleeperClass"]);                
-                Assert.Equal("R", row["ReservationIndicator"]);                
-                Assert.Equal(DBNull.Value, row["Catering"]);                
-                Assert.Equal(DBNull.Value, row["Branding"]);                
-                Assert.Equal(DBNull.Value, row["EuropeanUic"]);                
-                Assert.Equal("GW", row["Toc"]);                
-                Assert.Equal(false, row["ApplicableTimetable"]);                
-                Assert.Equal(DBNull.Value, row["RetailServiceId"]);                                                       
+                Assert.True(loader.Add(records[1]));                                                     
             }
         }
 
@@ -156,20 +106,9 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                var loader = InitialiseLoader(connection);
                 
-                Assert.True(loader.Add(records[2]));
-
-                var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
-                Assert.Equal("D", row["Action"]);
-                Assert.Equal("P", row["StpIndicator"]);
-                Assert.Equal("Y31280", row["TimetableUid"]);
-                Assert.Equal(new DateTime(2019, 10, 27), row["RunsFrom"]);
-
-                //Everything else is null
-                Assert.Equal(22, row.ItemArray.Count(o => DBNull.Value.Equals(o)));               
+                Assert.True(loader.Add(records[2]));            
             }
         }
 
@@ -181,12 +120,9 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                var loader = InitialiseLoader(connection);
                 
                 Assert.False(loader.Add(records[3]));
-
-                Assert.Equal(0, loader.Table.Rows.Count);
             }
         }
         
@@ -198,8 +134,7 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new ScheduleLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                var loader = InitialiseLoader(connection);
 
                 foreach (var record in records)
                     loader.Add(record);
