@@ -80,22 +80,22 @@ namespace TimetableLoader
                     return DBNull.Value;
             }
         }
-        private object ConvertAccommodationClass(ServiceClass accommodation, bool isCancelOrDelete)
+        internal static object ConvertAccommodationClass(ServiceClass accommodation, bool isCancelOrDelete = false)
         {
             if (accommodation == ServiceClass.None)
                 return (object) DBNull.Value;
-            
+
             // If cancel or delete then need to override default value of B
-            return isCancelOrDelete && accommodation == ServiceClass.B ? 
-                (object) DBNull.Value : 
-                accommodation.ToString();
+            return isCancelOrDelete && accommodation == ServiceClass.B
+                ? (object) DBNull.Value
+                : accommodation.ToString();
         }
 
-        private object ConvertReservationIndicator(ReservationIndicator indicator, bool isCancelOrDelete)
+        internal static object ConvertReservationIndicator(ReservationIndicator indicator, bool isCancelOrDelete = false)
         {
             if (indicator == ReservationIndicator.None)
                 return isCancelOrDelete ? (object) DBNull.Value : "";
-            
+
             return indicator.ToString();
         }
      }

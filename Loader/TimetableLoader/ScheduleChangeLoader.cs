@@ -38,9 +38,9 @@ namespace TimetableLoader
             row["TimingLoadType"] = SetNullIfEmpty(change.TimingLoadType);
             row["Speed"] = SetNullIfEmpty(change.Speed);
             row["OperatingCharacteristics"] = SetNullIfEmpty(change.OperatingCharacteristics);
-            row["SeatClass"] = ConvertAccommodationClass(change.SeatClass);
-            row["SleeperClass"] = ConvertAccommodationClass(change.SleeperClass);
-            row["ReservationIndicator"] = ConvertReservationIndicator(change.ReservationIndicator);
+            row["SeatClass"] = ScheduleHeaderLoader.ConvertAccommodationClass(change.SeatClass);
+            row["SleeperClass"] = ScheduleHeaderLoader.ConvertAccommodationClass(change.SleeperClass);
+            row["ReservationIndicator"] = ScheduleHeaderLoader.ConvertReservationIndicator(change.ReservationIndicator);
             row["Catering"] = SetNullIfEmpty(change.Catering);
             row["Branding"] = SetNullIfEmpty(change.Branding);
             row["EuropeanUic"] = SetNullIfEmpty(change.Uic);
@@ -48,25 +48,6 @@ namespace TimetableLoader
 
             Table.Rows.Add(row);
             return databaseId;
-        }
-
-        private object ConvertAccommodationClass(ServiceClass accommodation, bool isCancelOrDelete = false)
-        {
-            if (accommodation == ServiceClass.None)
-                return (object) DBNull.Value;
-
-            // If cancel or delete then need to override default value of B
-            return isCancelOrDelete && accommodation == ServiceClass.B
-                ? (object) DBNull.Value
-                : accommodation.ToString();
-        }
-
-        private object ConvertReservationIndicator(ReservationIndicator indicator, bool isCancelOrDelete = false)
-        {
-            if (indicator == ReservationIndicator.None)
-                return isCancelOrDelete ? (object) DBNull.Value : "";
-
-            return indicator.ToString();
         }
     }
 }
