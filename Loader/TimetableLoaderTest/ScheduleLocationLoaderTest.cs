@@ -64,7 +64,7 @@ LTPLYMTH  2119 00003     TF
                 loader.CreateDataTable();
 
                 var schedule = records[0] as Schedule;
-                loader.Add(12, schedule.Records.Skip(2));
+                loader.Add(12, schedule.Records[2] as OriginLocation);
                 
                 // LOLISKARD 2042 00003  BAY    TB                                                 
                 var row = loader.Table.Rows[0];
@@ -102,11 +102,11 @@ LTPLYMTH  2119 00003     TF
                 loader.CreateDataTable();
 
                 var schedule = records[0] as Schedule;
-                loader.Add(12, schedule.Records.Skip(2));
+                loader.Add(12, schedule.Records[3] as IntermediateLocation);
                 
                 // LILISKDGF 2043 2047      00000000   JNL   OPRM                                  
-                var row = loader.Table.Rows[1];
-                Assert.Equal(2, row["Id"]);
+                var row = loader.Table.Rows[0];
+                Assert.Equal(1, row["Id"]);
                 Assert.Equal(12, row["ScheduleId"]);
                 Assert.Equal(34, row["LocationId"]);
                 Assert.Equal(1, row["Sequence"]);
@@ -140,11 +140,11 @@ LTPLYMTH  2119 00003     TF
                 loader.CreateDataTable();
 
                 var schedule = records[0] as Schedule;
-                loader.Add(12, schedule.Records.Skip(2));
+                loader.Add(12, schedule.Records[9] as TerminalLocation);
                 
                 // LTPLYMTH  2119 00003     TF                                                     
-                var row = loader.Table.Rows[7];
-                Assert.Equal(8, row["Id"]);
+                var row = loader.Table.Rows[0];
+                Assert.Equal(1, row["Id"]);
                 Assert.Equal(12, row["ScheduleId"]);
                 Assert.Equal(34, row["LocationId"]);
                 Assert.Equal(1, row["Sequence"]);
@@ -178,11 +178,10 @@ LTPLYMTH  2119 00003     TF
                 var loader = new ScheduleLocationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
-                foreach (var record in records)
-                {
-                    var schedule = record as Schedule;
-                    loader.Add(100, schedule.Records.Skip(2));
-                }
+                var schedule = records[0] as Schedule;
+                loader.Add(12, schedule.Records[2] as OriginLocation);
+                loader.Add(12, schedule.Records[3] as IntermediateLocation);
+                loader.Add(12, schedule.Records[9] as TerminalLocation);
 
                 using (var transaction = connection.BeginTransaction())
                 {
@@ -196,7 +195,7 @@ LTPLYMTH  2119 00003     TF
                         {
                             var table = new DataTable();
                             adapter.Fill(table);
-                            Assert.Equal(8, table.Rows.Count);
+                            Assert.Equal(3, table.Rows.Count);
                         };
                     }
                 }

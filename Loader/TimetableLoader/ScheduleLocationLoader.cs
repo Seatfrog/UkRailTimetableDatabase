@@ -50,30 +50,8 @@ namespace TimetableLoader
 
             Table = table;
         }
-        
-        internal void Add(int id, IEnumerable<ICifRecord> records)
-        {
-            foreach (var record in records)
-            {
-                switch (record)
-                {
-                    case IntermediateLocation location:
-                        Add(id, location);
-                        break;
-                    case OriginLocation origin:
-                        Add(id, origin);
-                        break;
-                    case TerminalLocation terminal:
-                        Add(id, terminal);
-                        break;
-                    default:
-                        _logger.Warning("Unhandled record {recordType}: {record} - schedule {id}", record.GetType(), record, id);
-                        break;
-                }
-            }
-        }
-        
-        private void Add(int scheduleId, IntermediateLocation location)
+                
+        internal void Add(int scheduleId, IntermediateLocation location)
         {
             
             var row = Table.NewRow();
@@ -102,7 +80,7 @@ namespace TimetableLoader
             return newId;
         }
 
-        private void Add(int scheduleId, OriginLocation location)
+        internal void Add(int scheduleId, OriginLocation location)
         {           
             var row = Table.NewRow();
             row["Id"] = SetNewId();
@@ -120,7 +98,7 @@ namespace TimetableLoader
             Table.Rows.Add(row);
         }
         
-        private void Add(int scheduleId, TerminalLocation location)
+        internal void Add(int scheduleId, TerminalLocation location)
         {
             
             var row = Table.NewRow();

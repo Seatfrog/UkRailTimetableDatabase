@@ -78,7 +78,29 @@ namespace TimetableLoader
             var databaseId = _schedules.Add(id, schedule.GetScheduleDetails(), extraData);
 
             var skip = (extraData == null) ? 1 : 2;
-            _locations.Add(databaseId, schedule.Records.Skip(skip));
+            Add(databaseId, schedule.Records.Skip(skip));
+        }
+        
+        private void Add(int id, IEnumerable<ICifRecord> records)
+        {
+            foreach (var record in records)
+            {
+                switch (record)
+                {
+                    case IntermediateLocation location:
+                        _locations.Add(id, location);
+                        break;
+                    case OriginLocation origin:
+                        _locations.Add(id, origin);
+                        break;
+                    case TerminalLocation terminal:
+                        _locations.Add(id, terminal);
+                        break;
+                    default:
+                        _logger.Warning("Unhandled record {recordType}: {record} - schedule {id}", record.GetType(), record, id);
+                        break;
+                }
+            }
         }
         
         /// <summary>
