@@ -7,9 +7,9 @@ namespace TimetableLoader
 {
     internal class Sequence
     {
-        private int nextId = 0;
+        private long nextId = 0;
 
-        public int GetNext()
+        public long GetNext()
         {
             return Interlocked.Increment(ref nextId);
         }

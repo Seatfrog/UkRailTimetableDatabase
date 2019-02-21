@@ -76,7 +76,7 @@ BSDY31280191027                                                                P
                 loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
                 
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
+                Assert.Equal(1L, row["Id"]);
                 Assert.Equal("I", row["Action"]);
                 Assert.Equal("P", row["StpIndicator"]);
                 Assert.Equal("C55855", row["TimetableUid"]);
@@ -121,7 +121,7 @@ BSDY31280191027                                                                P
                 loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
 
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
+                Assert.Equal(1L, row["Id"]);
                 Assert.Equal("U", row["Action"]);
                 Assert.Equal("O", row["StpIndicator"]);
                 Assert.Equal("C56483", row["TimetableUid"]);
@@ -166,7 +166,7 @@ BSDY31280191027                                                                P
                 loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
 
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
+                Assert.Equal(1L, row["Id"]);
                 Assert.Equal("D", row["Action"]);
                 Assert.Equal("P", row["StpIndicator"]);
                 Assert.Equal("Y31280", row["TimetableUid"]);
@@ -188,7 +188,7 @@ BSDY31280191027                                                                P
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
-                var ids = new List<int>();
+                var ids = new List<long>();
                 foreach (var record in records)
                 {
                     var schedule = record as Schedule;

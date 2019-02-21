@@ -16,7 +16,7 @@ namespace TimetableLoader
         /// </summary>
         /// <param name="code">Unique code</param>
         /// <returns>Id</returns>
-        int Find(string code);
+        long Find(string code);
     }
     
     /// <summary>
@@ -49,7 +49,7 @@ namespace TimetableLoader
         /// <summary>
         /// Provides the lookup from Tiploc to database Id
         /// </summary>
-        internal IDictionary<string, int> Lookup { get; } = new Dictionary<string, int>();
+        internal IDictionary<string, long> Lookup { get; } = new Dictionary<string, long>();
 
         internal LocationLoader(SqlConnection connection, Sequence sequence)
         {
@@ -97,7 +97,7 @@ namespace TimetableLoader
             }
         }
 
-        private int Add(TiplocInsertAmend record)
+        private long Add(TiplocInsertAmend record)
         {
             var pair = CreateInsert(record);
             var row = pair.row;
@@ -109,7 +109,7 @@ namespace TimetableLoader
             return pair.id;
         }
 
-        private (DataRow row, int id) CreateInsert(TiplocInsertAmend record)
+        private (DataRow row, long id) CreateInsert(TiplocInsertAmend record)
         {
             var databaseId = SetNewId(record.Code);
             var row = Table.NewRow();
@@ -121,7 +121,7 @@ namespace TimetableLoader
             return (row, databaseId);
         }  
         
-        private int SetNewId(string tiploc)
+        private long SetNewId(string tiploc)
         {
             var newId = _sequence.GetNext();
             Lookup.Add(tiploc, newId);
@@ -163,7 +163,7 @@ namespace TimetableLoader
             }
         }
         
-        public int Find(string tiploc)
+        public long Find(string tiploc)
         {
             if (Lookup.TryGetValue(tiploc, out var id))
                 return id;

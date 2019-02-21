@@ -18,7 +18,7 @@ namespace TimetableLoaderTest
             
             var loader2 = Substitute.For<IRecordLoader>();
             
-            var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
+            var loader = new BulkLoader(new [] { loader1, loader2}, new Sequence(), Substitute.For<ILogger>());
             
             loader.Load(new ICifRecord[] { new Header() });
 
@@ -35,7 +35,7 @@ namespace TimetableLoaderTest
             var loader2 = Substitute.For<IRecordLoader>();
             loader2.Add(Arg.Any<ICifRecord>()).Returns(true);
            
-            var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
+            var loader = new BulkLoader(new [] { loader1, loader2}, new Sequence(), Substitute.For<ILogger>());
             
             loader.Load(new ICifRecord[] { new Header() });
 
@@ -52,7 +52,7 @@ namespace TimetableLoaderTest
             var loader2 = Substitute.For<IRecordLoader>();
             loader2.Add(Arg.Any<ICifRecord>()).Returns(false);
            
-            var loader = new BulkLoader(new [] { loader1, loader2}, logger);
+            var loader = new BulkLoader(new [] { loader1, loader2}, new Sequence(), logger);
             
             loader.Load(new ICifRecord[] { new Header() });
 
@@ -68,7 +68,7 @@ namespace TimetableLoaderTest
             var loader2 = Substitute.For<IRecordLoader>();
             loader2.Add(Arg.Any<ICifRecord>()).Returns(true);
             
-            var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
+            var loader = new BulkLoader(new [] { loader1, loader2}, new Sequence(), Substitute.For<ILogger>());
             
            loader.Load(new ICifRecord[] { new Header(), new Trailer() });
 
@@ -86,7 +86,7 @@ namespace TimetableLoaderTest
             var loader2 = Substitute.For<IRecordLoader>();
             loader2.Add(Arg.Any<ICifRecord>()).Returns(true);
             
-            var loader = new BulkLoader(new [] { loader1, loader2}, Substitute.For<ILogger>());
+            var loader = new BulkLoader(new [] { loader1, loader2}, new Sequence(), Substitute.For<ILogger>());
             
             Assert.Throws<Exception>(() => loader.Load(new ICifRecord[] { new Header(), new Trailer() }));
 

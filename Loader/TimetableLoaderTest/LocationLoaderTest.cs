@@ -55,7 +55,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                 Assert.True(loader.Add(records[0]));
                 
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
+                Assert.Equal(1L, row["Id"]);
                 Assert.Equal("I", row["Action"]);
                 Assert.Equal("PRNC848", row["Tiploc"]);
                 Assert.Equal("EDINBURGH SIGNAL 848", row["Description"]);
@@ -81,7 +81,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                 Assert.True(loader.Add(records[2]));
 
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
+                Assert.Equal(1L, row["Id"]);
                 Assert.Equal("U", row["Action"]);
                 Assert.Equal("WROX14", row["Tiploc"]);
                 Assert.Equal("WROXHOVETON & WROXHAM SIG", row["Description"]);
@@ -107,7 +107,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                 Assert.True(loader.Add(records[3]));
 
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
+                Assert.Equal(1L, row["Id"]);
                 Assert.Equal("D", row["Action"]);
                 Assert.Equal("LNDRBES", row["Tiploc"]);
                 Assert.Equal(DBNull.Value, row["Description"]);
@@ -203,7 +203,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                     loader.Add(record);
 
                 var id = loader.Find("PRNC884");
-                Assert.Equal(2, id);
+                Assert.Equal(2L, id);
             }
         }
         
@@ -222,10 +222,10 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                     loader.Add(record);
 
                 var id = loader.Find("WATRLOO");
-                Assert.Equal(5, id);
+                Assert.Equal(5L, id);
                 
                 var row = loader.Table.Rows[4];
-                Assert.Equal(5, row["Id"]);
+                Assert.Equal(5L, row["Id"]);
                 Assert.Equal("I", row["Action"]);
                 Assert.Equal("WATRLOO", row["Tiploc"]);
                 Assert.Equal("WATRLOO - MISSING", row["Description"]);

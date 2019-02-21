@@ -1,6 +1,7 @@
 ﻿using CifParser.Records;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using CifParser;
 using Serilog;
@@ -14,13 +15,14 @@ namespace TimetableLoader
 
     internal class BulkLoader : ILoader
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
+        private readonly IEnumerable<IRecordLoader> _recordLoaders;
+        private readonly Sequence _sequence;
 
-        private IEnumerable<IRecordLoader> _recordLoaders;
-
-        public BulkLoader(IEnumerable<IRecordLoader> recordLoaders, ILogger logger)
+        public BulkLoader(IEnumerable<IRecordLoader> recordLoaders, Sequence sequence, ILogger logger)
         {
             _recordLoaders = recordLoaders;
+            _sequence = sequence;
             _logger = logger;
         }
 
@@ -40,9 +42,12 @@ namespace TimetableLoader
                             break;
                         }
                      }
-                    
-                    if(!handled)
+
+                    if (!handled)
+                    {
+                        _sequence.GetNext();    // Bump the sequence to keep ids and lines in sync
                         _logger.Warning("Unknown record {recordType} : {record}", record.GetType(), record);
+                    }
                 }
                 catch (Exception e)
                 {

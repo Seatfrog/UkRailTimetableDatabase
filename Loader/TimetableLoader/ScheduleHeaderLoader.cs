@@ -49,7 +49,7 @@ namespace TimetableLoader
             Table = table;
         }
         
-        internal int Add(ScheduleId id, ScheduleDetails details, ScheduleExtraData extra)
+        internal long Add(ScheduleId id, ScheduleDetails details, ScheduleExtraData extra)
         {
             bool isCancelOrDelete = details.StpIndicator == StpIndicator.C ||
                                     details.Action == RecordAction.Delete;
@@ -128,7 +128,7 @@ namespace TimetableLoader
             return indicator.ToString();
         }
         
-        private int SetNewId()
+        private long SetNewId()
         {
             var newId = _sequence.GetNext();
             return newId;

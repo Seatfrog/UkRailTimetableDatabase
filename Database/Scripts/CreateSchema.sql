@@ -23,7 +23,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Locations](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
 	[Action] [char](1) NOT NULL,
 	[TipLoc] [varchar](7) NOT NULL,
 	[Description] [varchar](26) NULL,
@@ -36,7 +36,7 @@ CREATE TABLE [dbo].[Locations](
 GO
 
 CREATE TABLE [dbo].[Schedules](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
 	[Action] [char](1) NOT NULL,
 	[StpIndicator] [char](1) NOT NULL,
 	[TimetableUid] [char](6) NOT NULL,
@@ -67,9 +67,9 @@ CREATE TABLE [dbo].[Schedules](
 GO
 
 CREATE TABLE [dbo].[ScheduleLocations](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[ScheduleId] [int] NOT NULL,
-	[LocationId] [int] NOT NULL,
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[ScheduleId] [bigint] NOT NULL,
+	[LocationId] [bigint] NOT NULL,
 	[Sequence] [int] NOT NULL,
 	[WorkingArrival] [time] NULL,
 	[WorkingDeparture] [time] NULL,
@@ -87,9 +87,9 @@ CREATE TABLE [dbo].[ScheduleLocations](
 GO
 
 CREATE TABLE [dbo].[ScheduleChanges](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[ScheduleId] [int] NOT NULL,
-	[ScheduleLocationId] [int] NOT NULL,
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[ScheduleId] [bigint] NOT NULL,
+	[ScheduleLocationId] [bigint] NOT NULL,
 	[Category] [char](2) NULL,
 	[TrainIdentity] [char](4) NULL,
 	[NrsHeadCode] [varchar](4) NULL,

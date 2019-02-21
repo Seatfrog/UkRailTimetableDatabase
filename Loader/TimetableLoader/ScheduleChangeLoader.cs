@@ -49,7 +49,7 @@ namespace TimetableLoader
             Table = table;
         }
 
-        internal int Add(int scheduleId, int scheduleLocationId, ScheduleChange change)
+        internal long Add(long scheduleId, long scheduleLocationId, ScheduleChange change)
         {
             var databaseId = SetNewId();
 
@@ -113,7 +113,7 @@ namespace TimetableLoader
             return indicator.ToString();
         }
 
-        private int SetNewId()
+        private long SetNewId()
         {
             var newId = _sequence.GetNext();
             return newId;

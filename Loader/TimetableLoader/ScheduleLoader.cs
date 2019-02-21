@@ -85,13 +85,13 @@ namespace TimetableLoader
             Add(databaseId, schedule.Records.Skip(skip));
         }
         
-        private void Add(int scheduleId, IEnumerable<ICifRecord> records)
+        private void Add(long scheduleId, IEnumerable<ICifRecord> records)
         {
             ScheduleChange previous = null;
             
             foreach (var record in records)
             {
-                int locationId;
+                long locationId;
                 
                 switch (record)
                 {

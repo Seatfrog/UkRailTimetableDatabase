@@ -75,9 +75,9 @@ LTPADTON  2349 23503     TF
 
                 // CRHAYESAH OO2Y72    121384001 EMU360 100D     S                                 
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
-                Assert.Equal(12, row["ScheduleId"]);
-                Assert.Equal(34, row["ScheduleLocationId"]);
+                Assert.Equal(1L, row["Id"]);
+                Assert.Equal(12L, row["ScheduleId"]);
+                Assert.Equal(34L, row["ScheduleLocationId"]);
                 Assert.Equal("OO", row["Category"]);
                 Assert.Equal("2Y72", row["TrainIdentity"]);
                 Assert.Equal(DBNull.Value, row["NrsHeadCode"]);

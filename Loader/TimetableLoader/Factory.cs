@@ -36,19 +36,23 @@ namespace TimetableLoader
 
         public ILoader CreateLoader(SqlConnection connection)
         {
+            //HACK Use a single sequence as then the Ids match the line number so making it easier to check the original file
+            var sequence = new Sequence();
+
             return new BulkLoader(
-                CreateLoaders(connection),
+                CreateLoaders(connection, sequence),
+                sequence,
                 Log.Logger);
         }
 
-        private IEnumerable<IRecordLoader> CreateLoaders(SqlConnection connection)
-        {
-            var locationLoader = new LocationLoader(connection, new Sequence());
+        private IEnumerable<IRecordLoader> CreateLoaders(SqlConnection connection, Sequence sequence)
+        {            
+            var locationLoader = new LocationLoader(connection, sequence);
             locationLoader.CreateDataTable();
             var scheduleLoader = new ScheduleLoader(
-                new ScheduleHeaderLoader(connection, new Sequence(), _logger), 
-                new ScheduleLocationLoader(connection, new Sequence(), locationLoader, _logger), 
-                new ScheduleChangeLoader(connection, new Sequence(), _logger), 
+                new ScheduleHeaderLoader(connection, sequence, _logger), 
+                new ScheduleLocationLoader(connection, sequence, locationLoader, _logger), 
+                new ScheduleChangeLoader(connection, sequence, _logger), 
                 _logger);
             scheduleLoader.CreateDataTable();    
             

@@ -51,7 +51,7 @@ namespace TimetableLoader
             Table = table;
         }
                 
-        internal int Add(int scheduleId, IntermediateLocation location)
+        internal long Add(long scheduleId, IntermediateLocation location)
         {
             
             var databaseId = SetNewId();
@@ -76,13 +76,13 @@ namespace TimetableLoader
             return databaseId;
         }
        
-        private int SetNewId()
+        private long SetNewId()
         {
             var newId = _sequence.GetNext();
             return newId;
         }
 
-        internal int Add(int scheduleId, OriginLocation location)
+        internal long Add(long scheduleId, OriginLocation location)
         {           
             var databaseId = SetNewId();
             var row = Table.NewRow();
@@ -102,7 +102,7 @@ namespace TimetableLoader
             return databaseId;
         }
         
-        internal int Add(int scheduleId, TerminalLocation location)
+        internal long Add(long scheduleId, TerminalLocation location)
         {
             var databaseId = SetNewId();
             var row = Table.NewRow();

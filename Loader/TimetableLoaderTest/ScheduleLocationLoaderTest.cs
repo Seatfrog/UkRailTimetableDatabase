@@ -68,9 +68,9 @@ LTPLYMTH  2119 00003     TF
                 
                 // LOLISKARD 2042 00003  BAY    TB                                                 
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
-                Assert.Equal(12, row["ScheduleId"]);
-                Assert.Equal(34, row["LocationId"]);
+                Assert.Equal(1L, row["Id"]);
+                Assert.Equal(12L, row["ScheduleId"]);
+                Assert.Equal(34L, row["LocationId"]);
                 Assert.Equal(1, row["Sequence"]);
                 Assert.Equal(DBNull.Value, row["WorkingArrival"]);            
                 Assert.Equal(new TimeSpan(20, 42, 0), row["WorkingDeparture"]);            
@@ -106,9 +106,9 @@ LTPLYMTH  2119 00003     TF
                 
                 // LILISKDGF 2043 2047      00000000   JNL   OPRM                                  
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
-                Assert.Equal(12, row["ScheduleId"]);
-                Assert.Equal(34, row["LocationId"]);
+                Assert.Equal(1L, row["Id"]);
+                Assert.Equal(12L, row["ScheduleId"]);
+                Assert.Equal(34L, row["LocationId"]);
                 Assert.Equal(1, row["Sequence"]);
                 Assert.Equal(new TimeSpan(20, 43, 0), row["WorkingArrival"]);            
                 Assert.Equal(new TimeSpan(20, 47, 0), row["WorkingDeparture"]);            
@@ -144,9 +144,9 @@ LTPLYMTH  2119 00003     TF
                 
                 // LTPLYMTH  2119 00003     TF                                                     
                 var row = loader.Table.Rows[0];
-                Assert.Equal(1, row["Id"]);
-                Assert.Equal(12, row["ScheduleId"]);
-                Assert.Equal(34, row["LocationId"]);
+                Assert.Equal(1L, row["Id"]);
+                Assert.Equal(12L, row["ScheduleId"]);
+                Assert.Equal(34L, row["LocationId"]);
                 Assert.Equal(1, row["Sequence"]);
                 Assert.Equal(new TimeSpan(21, 19, 0), row["WorkingArrival"]);            
                 Assert.Equal(DBNull.Value, row["WorkingDeparture"]);            
