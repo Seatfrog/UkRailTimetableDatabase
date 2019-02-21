@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.NetworkInformation;
 using CifParser;
 using Serilog;
 
@@ -35,13 +36,15 @@ namespace TimetableLoader
 
         private readonly ScheduleHeaderLoader _schedules;
         private readonly ScheduleLocationLoader _locations;
+        private ScheduleChangeLoader _changes;
 
 
-        public ScheduleLoader(ScheduleHeaderLoader scheduleRecordsLoader, ScheduleLocationLoader locationLoader, ILogger logger)
+        public ScheduleLoader(ScheduleHeaderLoader scheduleRecordsLoader, ScheduleLocationLoader locationLoader, ScheduleChangeLoader changeLoader, ILogger logger)
         {
             _logger = logger;            
             _schedules = scheduleRecordsLoader;
             _locations = locationLoader;
+            _changes = changeLoader;
         }
 
         /// <summary>
@@ -51,6 +54,7 @@ namespace TimetableLoader
         {
             _schedules.CreateDataTable();
             _locations.CreateDataTable();
+            _changes.CreateDataTable();
         }
 
         /// <summary>
@@ -81,26 +85,48 @@ namespace TimetableLoader
             Add(databaseId, schedule.Records.Skip(skip));
         }
         
-        private void Add(int id, IEnumerable<ICifRecord> records)
+        private void Add(int scheduleId, IEnumerable<ICifRecord> records)
         {
+            ScheduleChange previous = null;
+            
             foreach (var record in records)
             {
+                int locationId;
+                
                 switch (record)
                 {
                     case IntermediateLocation location:
-                        _locations.Add(id, location);
+                        locationId = _locations.Add(scheduleId, location);
+                        if (previous != null)    // Assumes the next location record is the one linked to the change record.
+                        {
+                            _changes.Add(scheduleId, locationId, previous);
+                            previous = null;
+                        }
                         break;
                     case OriginLocation origin:
-                        _locations.Add(id, origin);
+                        locationId = _locations.Add(scheduleId, origin);
                         break;
                     case TerminalLocation terminal:
-                        _locations.Add(id, terminal);
+                        locationId = _locations.Add(scheduleId, terminal);
+                        if (previous != null)
+                        {
+                            _changes.Add(scheduleId, locationId, previous);
+                            previous = null;
+                        }
+                        break;
+                    case ScheduleChange change:
+                        if(previous != null)
+                            _logger.Warning("Unhandled change record {changeRecord} - schedule {id}", previous, scheduleId);
+                        previous = change;
                         break;
                     default:
-                        _logger.Warning("Unhandled record {recordType}: {record} - schedule {id}", record.GetType(), record, id);
+                        _logger.Warning("Unhandled record {recordType}: {record} - schedule {id}", record.GetType(), record, scheduleId);
                         break;
                 }
             }
+            
+            if(previous != null)
+                _logger.Warning("Unhandled change record {changeRecord} - schedule {id}", previous, scheduleId);
         }
         
         /// <summary>
@@ -111,6 +137,7 @@ namespace TimetableLoader
         {
             _schedules.Load(transaction);
             _locations.Load(transaction);
+            _changes.Load(transaction);
         }
     }
 }

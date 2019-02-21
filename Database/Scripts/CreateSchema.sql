@@ -4,6 +4,9 @@ GO
 DROP TABLE IF EXISTS [dbo].[ScheduleLocations]
 GO
 
+DROP TABLE IF EXISTS [dbo].[ScheduleChanges]
+GO
+
 DROP TABLE IF EXISTS [dbo].[Schedules]
 GO
 
@@ -80,5 +83,28 @@ CREATE TABLE [dbo].[ScheduleLocations](
 	[EngineeringAllowance] [varchar](2) NULL,
 	[PathingAllowance] [varchar](2) NULL,
 	[PerformanceAllowance] [varchar](2) NULL
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[ScheduleChanges](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ScheduleId] [int] NOT NULL,
+	[ScheduleLocationId] [int] NOT NULL,
+	[Category] [char](2) NULL,
+	[TrainIdentity] [char](4) NULL,
+	[NrsHeadCode] [varchar](4) NULL,
+	[ServiceCode] [varchar](8) NULL,
+	[PortionId] [varchar](1) NULL,
+	[PowerType] [char](3) NULL,
+	[TimingLoadType] [varchar](4) NULL,
+	[Speed] [int] NULL,
+	[OperatingCharacteristics] [varchar](6) NULL,
+	[SeatClass] [char](1) NULL,
+	[SleeperClass] [varchar](1) NULL,
+	[ReservationIndicator] [varchar](1) NULL,
+	[Catering] [varchar](4) NULL,
+	[Branding] [varchar](4) NULL,
+	[EuropeanUic] [char](5) NULL,
+	[RetailServiceId] [char](8) NULL
 ) ON [PRIMARY]
 GO

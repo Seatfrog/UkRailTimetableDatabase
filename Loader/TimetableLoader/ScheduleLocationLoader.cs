@@ -10,7 +10,7 @@ using Serilog;
 namespace TimetableLoader
 {
     /// <summary>
-    /// Bulk load Schedule Locations
+    /// Bulk load Schedule Locations LO, LI, LT
     /// </summary>
     internal class ScheduleLocationLoader
     {
@@ -51,11 +51,12 @@ namespace TimetableLoader
             Table = table;
         }
                 
-        internal void Add(int scheduleId, IntermediateLocation location)
+        internal int Add(int scheduleId, IntermediateLocation location)
         {
             
+            var databaseId = SetNewId();
             var row = Table.NewRow();
-            row["Id"] = SetNewId();
+            row["Id"] = databaseId;
             row["ScheduleId"] = scheduleId;
             row["LocationId"] = _lookup.Find(location.Location);
             row["Sequence"] = location.Sequence;
@@ -72,6 +73,7 @@ namespace TimetableLoader
             row["PathingAllowance"] = location.PathingAllowance;
             row["PerformanceAllowance"] = location.PerformanceAllowance;
             Table.Rows.Add(row);
+            return databaseId;
         }
        
         private int SetNewId()
@@ -80,10 +82,11 @@ namespace TimetableLoader
             return newId;
         }
 
-        internal void Add(int scheduleId, OriginLocation location)
+        internal int Add(int scheduleId, OriginLocation location)
         {           
+            var databaseId = SetNewId();
             var row = Table.NewRow();
-            row["Id"] = SetNewId();
+            row["Id"] = databaseId;
             row["ScheduleId"] = scheduleId;
             row["LocationId"] = _lookup.Find(location.Location);
             row["Sequence"] = location.Sequence;
@@ -96,13 +99,14 @@ namespace TimetableLoader
             row["PathingAllowance"] = location.PathingAllowance;
             row["PerformanceAllowance"] = location.PerformanceAllowance;
             Table.Rows.Add(row);
+            return databaseId;
         }
         
-        internal void Add(int scheduleId, TerminalLocation location)
+        internal int Add(int scheduleId, TerminalLocation location)
         {
-            
+            var databaseId = SetNewId();
             var row = Table.NewRow();
-            row["Id"] = SetNewId();
+            row["Id"] = databaseId;
             row["ScheduleId"] = scheduleId;
             row["LocationId"] = _lookup.Find(location.Location);
             row["Sequence"] = location.Sequence;
@@ -112,6 +116,7 @@ namespace TimetableLoader
             row["Path"] = location.Path;
             row["Activities"] = location.Activities;
             Table.Rows.Add(row);
+            return databaseId;
         }
         
         /// <summary>

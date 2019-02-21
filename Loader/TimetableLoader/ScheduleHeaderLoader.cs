@@ -53,7 +53,7 @@ namespace TimetableLoader
         {
             bool isCancelOrDelete = details.StpIndicator == StpIndicator.C ||
                                     details.Action == RecordAction.Delete;
-            var databaseId = SetNewId(id);
+            var databaseId = SetNewId();
             
             var row = Table.NewRow();
             row["Id"] = databaseId;
@@ -128,7 +128,7 @@ namespace TimetableLoader
             return indicator.ToString();
         }
         
-        private int SetNewId(ScheduleId id)
+        private int SetNewId()
         {
             var newId = _sequence.GetNext();
             return newId;

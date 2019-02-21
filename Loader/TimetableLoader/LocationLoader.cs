@@ -20,7 +20,7 @@ namespace TimetableLoader
     }
     
     /// <summary>
-    /// Bulk load Locations
+    /// Bulk load Locations TI, TA, TD
     /// </summary>
     /// <remarks> This has a built in assumption that loading a Full CIF file and so there are only TiplocInsert records (as it expccts Tiploc code to be unique)
     /// Usage:
