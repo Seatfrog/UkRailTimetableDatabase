@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using CifParser;
+using Serilog;
 
 namespace TimetableLoader
 {
@@ -39,42 +40,18 @@ namespace TimetableLoader
     /// </item>
     /// </list>
     /// </remarks>
-    internal class LocationLoader : IRecordLoader, IDatabaseIdLookup
+    internal class LocationLoader : RecordLoaderBase, IRecordLoader, IDatabaseIdLookup
     {
-        private readonly SqlConnection _connection;
-        private readonly Sequence _sequence;
-
-        internal DataTable Table { get; private set; }
-
+        protected override string TableName => "Locations";
+        
         /// <summary>
         /// Provides the lookup from Tiploc to database Id
         /// </summary>
         internal IDictionary<string, long> Lookup { get; } = new Dictionary<string, long>();
 
-        internal LocationLoader(SqlConnection connection, Sequence sequence)
+        internal LocationLoader(SqlConnection connection, Sequence sequence, ILogger logger) :
+            base(connection, sequence, logger)
         {
-            _connection = connection;
-            _sequence = sequence;
-        }
-
-        /// <summary>
-        /// Create the DataTable to load the records into
-        /// </summary>
-        internal void CreateDataTable()
-        {
-            var table = new DataTable();
-
-            // read the table structure from the database
-            using (var command = _connection.CreateCommand())
-            {
-                command.CommandText = "SELECT TOP 0 * FROM Locations";
-                using (var adapter = new SqlDataAdapter(command))
-                {
-                    adapter.Fill(table);
-                };
-            }
-
-            Table =  table;
         }
 
         /// <summary>
@@ -123,15 +100,10 @@ namespace TimetableLoader
         
         private long SetNewId(string tiploc)
         {
-            var newId = _sequence.GetNext();
+            var newId = SetNewId();
             Lookup.Add(tiploc, newId);
             return newId;
         }  
-            
-        private object SetNullIfEmpty(string value)
-        {
-            return string.IsNullOrEmpty(value) ? (object) DBNull.Value : value;
-        }
 
         private void Add(TiplocDelete record)
         {
@@ -141,28 +113,7 @@ namespace TimetableLoader
             row["Tiploc"] = record.Code;
             Table.Rows.Add(row);
         }
-
-        /// <summary>
-        /// Load the DataTable into the database
-        /// </summary>
-        /// <param name="transaction"></param>
-        public void Load(SqlTransaction transaction)
-        {
-            using (var bulk = new SqlBulkCopy(_connection, SqlBulkCopyOptions.KeepIdentity, transaction))
-            {
-                try
-                {
-                    bulk.DestinationTableName = "Locations";
-                    bulk.WriteToServer(Table);
-                }
-                catch (Exception ex)
-                {
-                    Serilog.Log.Error(ex, "Error loading locations");
-                    throw;
-                }
-            }
-        }
-        
+       
         public long Find(string tiploc)
         {
             if (Lookup.TryGetValue(tiploc, out var id))

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using NSubstitute;
+using Serilog;
 using TimetableLoader;
 using Xunit;
 
@@ -32,7 +34,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, null);
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
                 var table = loader.Table;
 
@@ -49,7 +51,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, new Sequence());
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
                 Assert.True(loader.Add(records[0]));
@@ -75,7 +77,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, new Sequence());
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
                 
                 Assert.True(loader.Add(records[2]));
@@ -101,7 +103,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, new Sequence());
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
                 
                 Assert.True(loader.Add(records[3]));
@@ -127,7 +129,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, new Sequence());
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
                 
                 Assert.False(loader.Add(records[4]));
@@ -145,7 +147,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, new Sequence());
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
                 foreach (var record in records)
@@ -163,7 +165,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, new Sequence());
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
                 foreach (var record in records)
@@ -196,7 +198,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, new Sequence());
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
                 foreach (var record in records)
@@ -215,7 +217,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
-                var loader = new LocationLoader(connection, new Sequence());
+                var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.CreateDataTable();
 
                 foreach (var record in records)

@@ -12,48 +12,19 @@ namespace TimetableLoader
     /// <summary>
     /// Bulk load Schedule Locations LO, LI, LT
     /// </summary>
-    internal class ScheduleLocationLoader
+    internal class ScheduleLocationLoader : RecordLoaderBase
     {
-        private readonly SqlConnection _connection;
-        private readonly Sequence _sequence;
         private readonly IDatabaseIdLookup _lookup;
-        private readonly ILogger _logger;
-        
-        internal DataTable Table { get; private set; }
-       
-        internal ScheduleLocationLoader(SqlConnection connection, Sequence sequence, IDatabaseIdLookup lookup, ILogger logger)
+
+        protected override string TableName => "ScheduleLocations";
+        internal ScheduleLocationLoader(SqlConnection connection, Sequence sequence, IDatabaseIdLookup lookup, ILogger logger) :
+            base(connection, sequence, logger)
         {
-            _connection = connection;
-            _sequence = sequence;
-            _logger = logger;
             _lookup = lookup;
         }
 
-        /// <summary>
-        /// Create the DataTable to load the records into
-        /// </summary>
-        internal void CreateDataTable()
-        {
-            var table = new DataTable();
-
-            // read the table structure from the database
-            using (var command = _connection.CreateCommand())
-            {
-                command.CommandText = "SELECT TOP 0 * FROM ScheduleLocations";
-                using (var adapter = new SqlDataAdapter(command))
-                {
-                    adapter.Fill(table);
-                }
-
-                ;
-            }
-
-            Table = table;
-        }
-                
         internal long Add(long scheduleId, IntermediateLocation location)
         {
-            
             var databaseId = SetNewId();
             var row = Table.NewRow();
             row["Id"] = databaseId;
@@ -75,15 +46,9 @@ namespace TimetableLoader
             Table.Rows.Add(row);
             return databaseId;
         }
-       
-        private long SetNewId()
-        {
-            var newId = _sequence.GetNext();
-            return newId;
-        }
 
         internal long Add(long scheduleId, OriginLocation location)
-        {           
+        {
             var databaseId = SetNewId();
             var row = Table.NewRow();
             row["Id"] = databaseId;
@@ -101,7 +66,7 @@ namespace TimetableLoader
             Table.Rows.Add(row);
             return databaseId;
         }
-        
+
         internal long Add(long scheduleId, TerminalLocation location)
         {
             var databaseId = SetNewId();
@@ -117,27 +82,6 @@ namespace TimetableLoader
             row["Activities"] = location.Activities;
             Table.Rows.Add(row);
             return databaseId;
-        }
-        
-        /// <summary>
-        /// Load the DataTable into the database
-        /// </summary>
-        /// <param name="transaction"></param>
-        public void Load(SqlTransaction transaction)
-        {
-            using (var bulk = new SqlBulkCopy(_connection, SqlBulkCopyOptions.KeepIdentity, transaction))
-            {
-                try
-                {
-                    bulk.DestinationTableName = "ScheduleLocations";
-                    bulk.WriteToServer(Table);
-                }
-                catch (Exception ex)
-                {
-                    Serilog.Log.Error(ex, "Error loading schedule locations");
-                    throw;
-                }
-            }
         }
     }
 }

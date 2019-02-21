@@ -47,7 +47,7 @@ namespace TimetableLoader
 
         private IEnumerable<IRecordLoader> CreateLoaders(SqlConnection connection, Sequence sequence)
         {            
-            var locationLoader = new LocationLoader(connection, sequence);
+            var locationLoader = new LocationLoader(connection, sequence, _logger);
             locationLoader.CreateDataTable();
             var scheduleLoader = new ScheduleLoader(
                 new ScheduleHeaderLoader(connection, sequence, _logger), 

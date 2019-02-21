@@ -12,43 +12,14 @@ namespace TimetableLoader
     /// <summary>
     /// Bulk load Schedule BS and BX records
     /// </summary>
-    internal class ScheduleHeaderLoader
+    internal class ScheduleHeaderLoader : RecordLoaderBase
     {
-        private readonly SqlConnection _connection;
-        private readonly Sequence _sequence;
-        private readonly ILogger _logger;
+        protected override string TableName => "Schedules";
 
-        internal DataTable Table { get; private set; }
-
-        internal ScheduleHeaderLoader(SqlConnection connection, Sequence sequence, ILogger logger)
+        internal ScheduleHeaderLoader(SqlConnection connection, Sequence sequence, ILogger logger) : base(connection, sequence, logger)
         {
-            _connection = connection;
-            _sequence = sequence;
-            _logger = logger;
         }
 
-        /// <summary>
-        /// Create the DataTable to load the records into
-        /// </summary>
-        internal void CreateDataTable()
-        {
-            var table = new DataTable();
-
-            // read the table structure from the database
-            using (var command = _connection.CreateCommand())
-            {
-                command.CommandText = "SELECT TOP 0 * FROM Schedules";
-                using (var adapter = new SqlDataAdapter(command))
-                {
-                    adapter.Fill(table);
-                }
-
-                ;
-            }
-
-            Table = table;
-        }
-        
         internal long Add(ScheduleId id, ScheduleDetails details, ScheduleExtraData extra)
         {
             bool isCancelOrDelete = details.StpIndicator == StpIndicator.C ||
@@ -127,37 +98,5 @@ namespace TimetableLoader
             
             return indicator.ToString();
         }
-        
-        private long SetNewId()
-        {
-            var newId = _sequence.GetNext();
-            return newId;
-        }
-
-        private object SetNullIfEmpty(string value)
-        {
-            return string.IsNullOrEmpty(value) ? (object) DBNull.Value : value;
-        }
-        
-        /// <summary>
-        /// Load the DataTable into the database
-        /// </summary>
-        /// <param name="transaction"></param>
-        public void Load(SqlTransaction transaction)
-        {
-            using (var bulk = new SqlBulkCopy(_connection, SqlBulkCopyOptions.KeepIdentity, transaction))
-            {
-                try
-                {
-                    bulk.DestinationTableName = "Schedules";
-                    bulk.WriteToServer(Table);
-                }
-                catch (Exception ex)
-                {
-                    Serilog.Log.Error(ex, "Error loading schedules");
-                    throw;
-                }
-            }
-        }
-    }
+     }
 }

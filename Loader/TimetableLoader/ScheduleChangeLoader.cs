@@ -12,41 +12,13 @@ namespace TimetableLoader
     /// <summary>
     /// Bulk load Schedule CR records
     /// </summary>
-    internal class ScheduleChangeLoader
+    internal class ScheduleChangeLoader : RecordLoaderBase
     {
-        private readonly SqlConnection _connection;
-        private readonly Sequence _sequence;
-        private readonly ILogger _logger;
+        protected override string TableName => "ScheduleChanges";
 
-        internal DataTable Table { get; private set; }
-
-        internal ScheduleChangeLoader(SqlConnection connection, Sequence sequence, ILogger logger)
+        internal ScheduleChangeLoader(SqlConnection connection, Sequence sequence, ILogger logger) : 
+            base(connection, sequence, logger)
         {
-            _connection = connection;
-            _sequence = sequence;
-            _logger = logger;
-        }
-
-        /// <summary>
-        /// Create the DataTable to load the records into
-        /// </summary>
-        internal void CreateDataTable()
-        {
-            var table = new DataTable();
-
-            // read the table structure from the database
-            using (var command = _connection.CreateCommand())
-            {
-                command.CommandText = "SELECT TOP 0 * FROM ScheduleChanges";
-                using (var adapter = new SqlDataAdapter(command))
-                {
-                    adapter.Fill(table);
-                }
-
-                ;
-            }
-
-            Table = table;
         }
 
         internal long Add(long scheduleId, long scheduleLocationId, ScheduleChange change)
@@ -78,22 +50,6 @@ namespace TimetableLoader
             return databaseId;
         }
 
-        private object MapAction(RecordAction action)
-        {
-            switch (action)
-            {
-                case RecordAction.Create:
-                    return "I";
-                case RecordAction.Delete:
-                    return "D";
-                case RecordAction.Update:
-                    return "U";
-                default:
-                    _logger.Error("Unknown record action {action}", action);
-                    return DBNull.Value;
-            }
-        }
-
         private object ConvertAccommodationClass(ServiceClass accommodation, bool isCancelOrDelete = false)
         {
             if (accommodation == ServiceClass.None)
@@ -111,38 +67,6 @@ namespace TimetableLoader
                 return isCancelOrDelete ? (object) DBNull.Value : "";
 
             return indicator.ToString();
-        }
-
-        private long SetNewId()
-        {
-            var newId = _sequence.GetNext();
-            return newId;
-        }
-
-        private object SetNullIfEmpty(string value)
-        {
-            return string.IsNullOrEmpty(value) ? (object) DBNull.Value : value;
-        }
-
-        /// <summary>
-        /// Load the DataTable into the database
-        /// </summary>
-        /// <param name="transaction"></param>
-        public void Load(SqlTransaction transaction)
-        {
-            using (var bulk = new SqlBulkCopy(_connection, SqlBulkCopyOptions.KeepIdentity, transaction))
-            {
-                try
-                {
-                    bulk.DestinationTableName = "ScheduleChanges";
-                    bulk.WriteToServer(Table);
-                }
-                catch (Exception ex)
-                {
-                    Serilog.Log.Error(ex, "Error loading schedule changes");
-                    throw;
-                }
-            }
         }
     }
 }
