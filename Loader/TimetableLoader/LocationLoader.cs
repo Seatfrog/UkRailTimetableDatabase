@@ -114,7 +114,7 @@ namespace TimetableLoader
             var databaseId = SetNewId(record.Code);
             var row = Table.NewRow();
             row["Id"] = databaseId;
-            row["Action"] = record.Action == RecordAction.Create ? "C" : "U";
+            row["Action"] = record.Action == RecordAction.Create ? "I" : "U";
             row["Tiploc"] = record.Code;
             row["Description"] = record.Description;
             Table.Rows.Add(row);

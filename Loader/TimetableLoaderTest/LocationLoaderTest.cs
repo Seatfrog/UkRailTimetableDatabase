@@ -56,7 +56,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                 
                 var row = loader.Table.Rows[0];
                 Assert.Equal(1, row["Id"]);
-                Assert.Equal("C", row["Action"]);
+                Assert.Equal("I", row["Action"]);
                 Assert.Equal("PRNC848", row["Tiploc"]);
                 Assert.Equal("EDINBURGH SIGNAL 848", row["Description"]);
                 Assert.Equal("932885", row["Nlc"]);
@@ -226,7 +226,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                 
                 var row = loader.Table.Rows[4];
                 Assert.Equal(5, row["Id"]);
-                Assert.Equal("C", row["Action"]);
+                Assert.Equal("I", row["Action"]);
                 Assert.Equal("WATRLOO", row["Tiploc"]);
                 Assert.Equal("WATRLOO - MISSING", row["Description"]);
                 Assert.Equal(DBNull.Value, row["Nlc"]);

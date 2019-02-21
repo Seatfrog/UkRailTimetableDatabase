@@ -77,7 +77,7 @@ BSDY31280191027                                                                P
                 
                 var row = loader.Table.Rows[0];
                 Assert.Equal(1, row["Id"]);
-                Assert.Equal("C", row["Action"]);
+                Assert.Equal("I", row["Action"]);
                 Assert.Equal("P", row["StpIndicator"]);
                 Assert.Equal("C55855", row["TimetableUid"]);
                 Assert.Equal(new DateTime(2019, 10, 26), row["RunsFrom"]);

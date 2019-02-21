@@ -99,7 +99,7 @@ namespace TimetableLoader
             switch (action)
             {
                 case RecordAction.Create:
-                    return "C";
+                    return "I";
                 case RecordAction.Delete:
                     return "D";
                 case RecordAction.Update:
