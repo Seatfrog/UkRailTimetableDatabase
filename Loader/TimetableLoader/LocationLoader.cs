@@ -1,27 +1,24 @@
 ﻿using CifParser.Records;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using CifParser;
 
 namespace TimetableLoader
 {
-    public interface IRecordLoader
+    public interface IDatabaseIdLookup
     {
         /// <summary>
-        /// Add a record to the DataTable
+        /// Lookup a database Id based upon a unique code
         /// </summary>
-        /// <param name="record"></param>
-        /// <returns>Whether added record</returns>
-        bool Add(ICifRecord record);
-
-        /// <summary>
-        /// Load the DataTable into the database
-        /// </summary>
-        /// <param name="transaction"></param>
-        void Load(SqlTransaction transaction);
+        /// <param name="code">Unique code</param>
+        /// <returns>Id</returns>
+        int Find(string code);
     }
-
+    
     /// <summary>
     /// Bulk load Locations
     /// </summary>
@@ -42,7 +39,7 @@ namespace TimetableLoader
     /// </item>
     /// </list>
     /// </remarks>
-    internal class LocationLoader : IRecordLoader
+    internal class LocationLoader : IRecordLoader, IDatabaseIdLookup
     {
         private readonly SqlConnection _connection;
         private readonly Sequence _sequence;
@@ -100,21 +97,30 @@ namespace TimetableLoader
             }
         }
 
-        private void Add(TiplocInsertAmend record)
+        private int Add(TiplocInsertAmend record)
         {
-            var row = Table.NewRow();
-            row["Id"] = SetNewId(record.Code);
-            row["Action"] = record.Action == RecordAction.Create ? "C" : "U";
-            row["Tiploc"] = record.Code;
-            row["Description"] = record.Description;
+            var pair = CreateInsert(record);
+            var row = pair.row;
             row["Nlc"] = record.Nalco;
-            row["NlcCheckCharacter"] = record.NalcoCheckCharacter;
+            row["NlcCheckCharacter"] = record.NalcoCheckCharacter ;
             row["NlcDescription"] = SetNullIfEmpty(record.NlcDescription);
             row["Stanox"] = record.Stanox;
             row["ThreeLetterCode"] = SetNullIfEmpty(record.ThreeLetterCode);
-            Table.Rows.Add(row);
+            return pair.id;
         }
 
+        private (DataRow row, int id) CreateInsert(TiplocInsertAmend record)
+        {
+            var databaseId = SetNewId(record.Code);
+            var row = Table.NewRow();
+            row["Id"] = databaseId;
+            row["Action"] = record.Action == RecordAction.Create ? "C" : "U";
+            row["Tiploc"] = record.Code;
+            row["Description"] = record.Description;
+            Table.Rows.Add(row);
+            return (row, databaseId);
+        }  
+        
         private int SetNewId(string tiploc)
         {
             var newId = _sequence.GetNext();
@@ -136,7 +142,6 @@ namespace TimetableLoader
             Table.Rows.Add(row);
         }
 
-
         /// <summary>
         /// Load the DataTable into the database
         /// </summary>
@@ -156,6 +161,22 @@ namespace TimetableLoader
                     throw;
                 }
             }
+        }
+        
+        public int Find(string tiploc)
+        {
+            if (Lookup.TryGetValue(tiploc, out var id))
+                return id;
+            
+            Serilog.Log.Warning("Adding missing location {tiploc}", tiploc);
+            var record = new TiplocInsertAmend()
+            {
+                Action = RecordAction.Create,
+                Code = tiploc,
+                Description = $"{tiploc} - MISSING"
+            };
+            id = CreateInsert(record).id;
+            return id;
         }
     }
 }

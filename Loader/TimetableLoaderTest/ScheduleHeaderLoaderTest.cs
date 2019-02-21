@@ -178,6 +178,29 @@ BSDY31280191027                                                                P
         }
         
         [Fact]
+        public void EachScheduleHasUniqueDatabaseId()
+        {
+            var records = ParserHelper.ParseRecords(Records);
+
+            using (var connection = _fixture.CreateConnection())
+            {
+                connection.Open();
+                var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
+                loader.CreateDataTable();
+
+                var ids = new List<int>();
+                foreach (var record in records)
+                {
+                    var schedule = record as Schedule;
+                    var id = loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
+                    ids.Add(id);
+                }
+
+                Assert.Equal(ids.Count, ids.Distinct().Count());
+            }
+        }
+        
+        [Fact]
         public void LoadIntoDatabase()
         {
             var records = ParserHelper.ParseRecords(Records);

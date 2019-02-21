@@ -187,5 +187,54 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
                 }
             }
         }
+        
+        [Fact]
+        public void FindExistingTiploc()
+        {
+            var records = ParserHelper.ParseRecords(Records);
+
+            using (var connection = _fixture.CreateConnection())
+            {
+                connection.Open();
+                var loader = new LocationLoader(connection, new Sequence());
+                loader.CreateDataTable();
+
+                foreach (var record in records)
+                    loader.Add(record);
+
+                var id = loader.Find("PRNC884");
+                Assert.Equal(2, id);
+            }
+        }
+        
+        [Fact]
+        public void FindMissingTiploc()
+        {
+            var records = ParserHelper.ParseRecords(Records);
+
+            using (var connection = _fixture.CreateConnection())
+            {
+                connection.Open();
+                var loader = new LocationLoader(connection, new Sequence());
+                loader.CreateDataTable();
+
+                foreach (var record in records)
+                    loader.Add(record);
+
+                var id = loader.Find("WATRLOO");
+                Assert.Equal(5, id);
+                
+                var row = loader.Table.Rows[4];
+                Assert.Equal(5, row["Id"]);
+                Assert.Equal("C", row["Action"]);
+                Assert.Equal("WATRLOO", row["Tiploc"]);
+                Assert.Equal("WATRLOO - MISSING", row["Description"]);
+                Assert.Equal(DBNull.Value, row["Nlc"]);
+                Assert.Equal(DBNull.Value, row["NlcCheckCharacter"]);
+                Assert.Equal(DBNull.Value, row["NlcDescription"]);
+                Assert.Equal(DBNull.Value, row["Stanox"]);
+                Assert.Equal(DBNull.Value, row["ThreeLetterCode"]);
+            }
+        }
     }
 }

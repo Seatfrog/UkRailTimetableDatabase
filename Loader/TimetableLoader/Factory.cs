@@ -47,6 +47,7 @@ namespace TimetableLoader
             locationLoader.CreateDataTable();
             var scheduleLoader = new ScheduleLoader(
                 new ScheduleHeaderLoader(connection, new Sequence(), _logger), 
+                new ScheduleLocationLoader(connection, new Sequence(), locationLoader, _logger), 
                  _logger);
             scheduleLoader.CreateDataTable();    
             

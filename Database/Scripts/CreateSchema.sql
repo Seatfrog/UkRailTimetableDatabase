@@ -1,10 +1,16 @@
 USE [Timetable]
 GO
 
-DROP TABLE [dbo].[Schedules]
+DROP TABLE IF EXISTS [dbo].[ScheduleLocations]
 GO
 
-DROP TABLE [dbo].[Locations]
+DROP TABLE IF EXISTS [dbo].[Schedules]
+GO
+
+DROP TABLE IF EXISTS [dbo].[Locations]
+GO
+
+USE [Timetable]
 GO
 
 SET ANSI_NULLS ON
@@ -40,7 +46,7 @@ CREATE TABLE [dbo].[Schedules](
 	[TrainIdentity] [char](4) NULL,
 	[NrsHeadCode] [varchar](4) NULL,
 	[ServiceCode] [varchar](8) NULL,
-	[PortiionId] [varchar](1) NULL,
+	[PortionId] [varchar](1) NULL,
 	[PowerType] [char](3) NULL,
 	[TimingLoadType] [varchar](4) NULL,
 	[Speed] [int] NULL,
@@ -57,3 +63,22 @@ CREATE TABLE [dbo].[Schedules](
 ) ON [PRIMARY]
 GO
 
+CREATE TABLE [dbo].[ScheduleLocations](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ScheduleId] [int] NOT NULL,
+	[LocationId] [int] NOT NULL,
+	[Sequence] [int] NOT NULL,
+	[WorkingArrival] [time] NULL,
+	[WorkingDeparture] [time] NULL,
+	[WorkingPass] [time] NULL,
+	[PublicArrival] [time] NULL,
+	[PublicDeparture] [time] NULL,
+	[Platform] [varchar](3) NULL,
+	[Line] [varchar](3) NULL,
+	[Path] [varchar](3) NULL,
+	[Activities] [varchar](12) NULL,
+	[EngineeringAllowance] [varchar](2) NULL,
+	[PathingAllowance] [varchar](2) NULL,
+	[PerformanceAllowance] [varchar](2) NULL
+) ON [PRIMARY]
+GO

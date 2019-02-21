@@ -10,25 +10,8 @@ using Serilog;
 namespace TimetableLoader
 {
     /// <summary>
-    /// Bulk load Schedules
+    /// Bulk load Schedule BS and BX records
     /// </summary>
-    /// <remarks>
-    /// Usage:
-    /// <list type="number">
-    /// <item>
-    /// <description>Construct the object.</description>
-    /// </item>
-    /// <item>
-    /// <description>CreateDataTable<see cref="CreateDataTable" /></description>
-    /// </item>
-    /// <item>
-    /// <description>Add<see cref="Add(ICifRecord)" /> the records</description>
-    /// </item>
-    /// <item>
-    /// <description>Load<see cref="Load"/> to upload the records to the database</description>
-    /// </item>
-    /// </list>
-    /// </remarks>
     internal class ScheduleHeaderLoader
     {
         private readonly SqlConnection _connection;
@@ -66,13 +49,14 @@ namespace TimetableLoader
             Table = table;
         }
         
-        internal void Add(ScheduleId id, ScheduleDetails details, ScheduleExtraData extra)
+        internal int Add(ScheduleId id, ScheduleDetails details, ScheduleExtraData extra)
         {
             bool isCancelOrDelete = details.StpIndicator == StpIndicator.C ||
                                     details.Action == RecordAction.Delete;
+            var databaseId = SetNewId(id);
             
             var row = Table.NewRow();
-            row["Id"] = SetNewId(id);
+            row["Id"] = databaseId;
             row["Action"] = MapAction(details.Action);
             row["StpIndicator"] = details.StpIndicator.ToString();
             row["TimetableUid"] = details.TimetableUid;
@@ -107,6 +91,7 @@ namespace TimetableLoader
             }
 
             Table.Rows.Add(row);
+            return databaseId;
         }
 
         private object MapAction(RecordAction action)

@@ -34,12 +34,14 @@ namespace TimetableLoader
         private readonly ILogger _logger;
 
         private readonly ScheduleHeaderLoader _schedules;
-        
+        private readonly ScheduleLocationLoader _locations;
 
-        public ScheduleLoader(ScheduleHeaderLoader scheduleRecordsLoader, ILogger logger)
+
+        public ScheduleLoader(ScheduleHeaderLoader scheduleRecordsLoader, ScheduleLocationLoader locationLoader, ILogger logger)
         {
             _logger = logger;            
             _schedules = scheduleRecordsLoader;
+            _locations = locationLoader;
         }
 
         /// <summary>
@@ -48,6 +50,7 @@ namespace TimetableLoader
         public void CreateDataTable()
         {
             _schedules.CreateDataTable();
+            _locations.CreateDataTable();
         }
 
         /// <summary>
@@ -72,14 +75,10 @@ namespace TimetableLoader
             var id = schedule.GetId();
             var extraData = schedule.GetScheduleExtraDetails();
             
-            _schedules.Add(id, schedule.GetScheduleDetails(), extraData);
+            var databaseId = _schedules.Add(id, schedule.GetScheduleDetails(), extraData);
 
             var skip = (extraData == null) ? 1 : 2;
-            Add(id, schedule.Records.Skip(skip));
-        }
-        private void Add(ScheduleId id, IEnumerable<ICifRecord> records)
-        {
-            
+            _locations.Add(databaseId, schedule.Records.Skip(skip));
         }
         
         /// <summary>
@@ -89,6 +88,7 @@ namespace TimetableLoader
         public void Load(SqlTransaction transaction)
         {
             _schedules.Load(transaction);
+            _locations.Load(transaction);
         }
     }
 }

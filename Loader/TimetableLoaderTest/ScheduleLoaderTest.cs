@@ -52,13 +52,14 @@ ZZ                                                                              
             using (var connection = _fixture.CreateConnection())
             {
                 connection.Open();
+                var lookup = Substitute.For<IDatabaseIdLookup>();
                 var schedules = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                var loader = new ScheduleLoader(schedules, Substitute.For<ILogger>());
+                var locations = new ScheduleLocationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
+                var loader = new ScheduleLoader(schedules, locations, Substitute.For<ILogger>());
                 loader.CreateDataTable();
-                var table = schedules.Table;
 
-                Assert.Equal(27, table.Columns.Count);
-                Assert.NotNull(table.Columns["TimetableUid"]);
+                Assert.NotNull(schedules.Table);
+                Assert.NotNull(locations.Table);
             }
         }
 
@@ -78,8 +79,12 @@ ZZ                                                                              
 
         private ScheduleLoader InitialiseLoader(SqlConnection connection)
         {
+            var sequence = new Sequence();
+            var lookup = Substitute.For<IDatabaseIdLookup>();
+            lookup.Find(Arg.Any<string>()).Returns(c => sequence.GetNext());
             var schedules = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
-            var loader = new ScheduleLoader(schedules, Substitute.For<ILogger>());
+            var locations = new ScheduleLocationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
+            var loader = new ScheduleLoader(schedules, locations, Substitute.For<ILogger>());
             loader.CreateDataTable();
             return loader;
         }
