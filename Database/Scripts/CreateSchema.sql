@@ -1,6 +1,9 @@
 USE [Timetable]
 GO
 
+DROP TABLE IF EXISTS [dbo].[Associations]
+GO
+
 DROP TABLE IF EXISTS [dbo].[ScheduleLocations]
 GO
 
@@ -106,5 +109,23 @@ CREATE TABLE [dbo].[ScheduleChanges](
 	[Branding] [varchar](4) NULL,
 	[EuropeanUic] [char](5) NULL,
 	[RetailServiceId] [char](8) NULL
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[Associations](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Action] [char](1) NOT NULL,
+	[StpIndicator] [char](1) NOT NULL,
+	[MainUid] [char](6) NOT NULL,
+	[AssociatedUid] [char](6) NOT NULL,
+	[RunsFrom] [date] NOT NULL,
+	[RunsTo] [date] NULL,
+	[DayMask] [tinyint] NULL,
+	[Category] [char](2) NULL,
+	[DateIndicator] [char](1) NULL,
+	[LocationId] [bigint] NOT NULL,
+	[MainSequence] [int] NOT NULL,
+	[AssociatedSequence] [int] NOT NULL,
+	[AssociationType] [char](1) NULL
 ) ON [PRIMARY]
 GO

@@ -55,11 +55,14 @@ namespace TimetableLoader
                 new ScheduleChangeLoader(connection, sequence, _logger), 
                 _logger);
             scheduleLoader.CreateDataTable();    
+            var associationLoader = new AssociationLoader(connection, sequence, locationLoader, _logger);
+            associationLoader.CreateDataTable();
             
             return new IRecordLoader[]
             {
                 locationLoader,
-                scheduleLoader
+                scheduleLoader,
+                associationLoader
             };
         }
 

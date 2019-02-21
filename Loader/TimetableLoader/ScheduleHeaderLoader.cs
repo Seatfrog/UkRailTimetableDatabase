@@ -28,7 +28,7 @@ namespace TimetableLoader
             
             var row = Table.NewRow();
             row["Id"] = databaseId;
-            row["Action"] = MapAction(details.Action);
+            row["Action"] = MapAction(details.Action, _logger);
             row["StpIndicator"] = details.StpIndicator.ToString();
             row["TimetableUid"] = details.TimetableUid;
             row["RunsFrom"] = details.RunsFrom;
@@ -65,7 +65,7 @@ namespace TimetableLoader
             return databaseId;
         }
 
-        private object MapAction(RecordAction action)
+        internal static object MapAction(RecordAction action, ILogger logger)
         {
             switch (action)
             {
@@ -76,7 +76,7 @@ namespace TimetableLoader
                 case RecordAction.Update:
                     return "U";
                 default:
-                    _logger.Error("Unknown record action {action}", action);
+                    logger.Error("Unknown record action {action}", action);
                     return DBNull.Value;
             }
         }
