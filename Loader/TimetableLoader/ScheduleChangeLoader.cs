@@ -23,7 +23,7 @@ namespace TimetableLoader
 
         internal long Add(long scheduleId, long scheduleLocationId, ScheduleChange change)
         {
-            var databaseId = SetNewId();
+            var databaseId = GetNewId();
 
             var row = Table.NewRow();
             row["Id"] = databaseId;

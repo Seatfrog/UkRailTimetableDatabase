@@ -37,7 +37,7 @@ namespace TimetableLoader
         
         internal long Add(Association association)
         {
-            var databaseId = SetNewId();
+            var databaseId = GetNewId();
             var row = Table.NewRow();
             row["Id"] = databaseId;
             row["Action"] = ScheduleHeaderLoader.MapAction(association.Action, _logger);

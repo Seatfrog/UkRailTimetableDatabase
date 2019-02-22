@@ -25,7 +25,7 @@ namespace TimetableLoader
 
         internal long Add(long scheduleId, IntermediateLocation location)
         {
-            var databaseId = SetNewId();
+            var databaseId = GetNewId();
             var row = Table.NewRow();
             row["Id"] = databaseId;
             row["ScheduleId"] = scheduleId;
@@ -49,7 +49,7 @@ namespace TimetableLoader
 
         internal long Add(long scheduleId, OriginLocation location)
         {
-            var databaseId = SetNewId();
+            var databaseId = GetNewId();
             var row = Table.NewRow();
             row["Id"] = databaseId;
             row["ScheduleId"] = scheduleId;
@@ -69,7 +69,7 @@ namespace TimetableLoader
 
         internal long Add(long scheduleId, TerminalLocation location)
         {
-            var databaseId = SetNewId();
+            var databaseId = GetNewId();
             var row = Table.NewRow();
             row["Id"] = databaseId;
             row["ScheduleId"] = scheduleId;

@@ -25,6 +25,7 @@ LISTGRMNS           2104H000000002                       H
 LISASH              2110 000000002                                              
 LISTBDXJN           2113H00000000                     1                         
 LTPLYMTH  2119 00003     TF                                                     
+BSDY31280191027                                                                P
 BSRC564831910261912140000010 POO2P94    125473001 DMUS   075      S R          O
 BX         GWN                                                                  
 LOGUNISLK 1913 1913          TB                                                 
@@ -37,8 +38,8 @@ LIKEYHAM  1950 1950H     194919492        T
 LIDOCKYDP 1952 1952H     195119512        R                                     
 LIDEVNPRT 1954 1954H     195319532        T                                     
 LTPLYMTH  1958 19586     TF                                                     
-BSDY31280191027                                                                P";
-
+";
+        
         private readonly IntegrationFixture _fixture;
 
         public ScheduleHeaderLoaderTest(IntegrationFixture fixture)
@@ -117,7 +118,7 @@ BSDY31280191027                                                                P
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.Initialise();
                 
-                var schedule = records[1] as Schedule;
+                var schedule = records[2] as Schedule;
                 loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
 
                 var row = loader.Table.Rows[0];
@@ -162,7 +163,7 @@ BSDY31280191027                                                                P
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
                 loader.Initialise();
                 
-                var schedule = records[2] as Schedule;
+                var schedule = records[1] as Schedule;
                 loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
 
                 var row = loader.Table.Rows[0];
@@ -197,6 +198,31 @@ BSDY31280191027                                                                P
                 }
 
                 Assert.Equal(ids.Count, ids.Distinct().Count());
+            }
+        }
+        
+        [Fact]
+        public void SkipsDatabaseIdWhenHaveBxRecord()
+        {
+            var records = ParserHelper.ParseRecords(Records);
+
+            using (var connection = _fixture.CreateConnection())
+            {
+                connection.Open();
+                var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
+                loader.Initialise();
+
+                var ids = new List<long>();
+                foreach (var record in records)
+                {
+                    var schedule = record as Schedule;
+                    var id = loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
+                    ids.Add(id);
+                }
+
+                Assert.Equal(1, ids[0]);
+                Assert.Equal(3, ids[1]);    // First schedule has BS and BX so next skips 1 Id
+                Assert.Equal(4, ids[2]);    // Second schedule only has BS
             }
         }
         

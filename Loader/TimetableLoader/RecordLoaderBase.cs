@@ -76,7 +76,7 @@ namespace TimetableLoader
             _logger.Information("{table} Copied {count} so far...", TableName, e.RowsCopied);
         }
         
-        protected long SetNewId()
+        protected long GetNewId()
         {
             var newId = _sequence.GetNext();
             return newId;

@@ -24,7 +24,7 @@ namespace TimetableLoader
         {
             bool isCancelOrDelete = details.StpIndicator == StpIndicator.C ||
                                     details.Action == RecordAction.Delete;
-            var databaseId = SetNewId();
+            var databaseId = GetNewId();
             
             var row = Table.NewRow();
             row["Id"] = databaseId;
@@ -55,6 +55,7 @@ namespace TimetableLoader
             // Extra data from BX record
             if (extra != null)
             {
+                GetNewId();    //Skip an Id to keep it synced with record in file 
                 row["EuropeanUic"] = SetNullIfEmpty(extra.UIC);
                 row["Toc"] = SetNullIfEmpty(extra.Toc);
                 row["ApplicableTimetable"] = extra.ApplicableTimetableCode == "Y" ? 1 : 0;

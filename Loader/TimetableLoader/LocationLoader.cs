@@ -100,7 +100,7 @@ namespace TimetableLoader
         
         private long SetNewId(string tiploc)
         {
-            var newId = SetNewId();
+            var newId = GetNewId();
             Lookup.Add(tiploc, newId);
             return newId;
         }  
