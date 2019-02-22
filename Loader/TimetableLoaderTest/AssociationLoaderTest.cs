@@ -34,7 +34,7 @@ ZZ";
             {
                 connection.Open();
                 var loader = new AssociationLoader(connection, new Sequence(), Substitute.For<IDatabaseIdLookup>(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 var table = loader.Table;
 
                 Assert.Equal(14, table.Columns.Count);
@@ -54,7 +54,7 @@ ZZ";
                 lookup.Find("MANNGTR").Returns(34);
                 
                 var loader = new AssociationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 Assert.True( loader.Add(records[2]));
                 
@@ -89,7 +89,7 @@ ZZ";
 
                 connection.Open();
                 var loader = new AssociationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 
                 Assert.True( loader.Add(records[0]));
                 
@@ -124,7 +124,7 @@ ZZ";
                 lookup.Find("HDRSFLD").Returns(34);
                 
                 var loader = new AssociationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 Assert.True( loader.Add(records[1]));
                 
@@ -161,7 +161,7 @@ ZZ";
                 lookup.Find(Arg.Any<string>()).Returns(c => sequence.GetNext());
                 
                 var loader = new AssociationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 foreach (var record in records)
                     loader.Add(record);

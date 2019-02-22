@@ -27,13 +27,27 @@ namespace TimetableLoader
         }
 
         public void Load(IEnumerable<ICifRecord> records)
-        {            
+        {
+            InitialiseLoaders();
+            AddRecords(records);
+            LoadIntoDatabase();
+        }
+
+        private void InitialiseLoaders()
+        {
+            foreach (var loader in _recordLoaders)
+            {
+                loader.Initialise();
+            }        }
+
+        private void AddRecords(IEnumerable<ICifRecord> records)
+        {
             foreach (var record in records)
             {
                 try
                 {
                     var handled = false;
-                    
+
                     foreach (var loader in _recordLoaders)
                     {
                         if (loader.Add(record))
@@ -41,22 +55,25 @@ namespace TimetableLoader
                             handled = true;
                             break;
                         }
-                     }
+                    }
 
                     if (!handled)
                     {
-                        _sequence.GetNext();    // Bump the sequence to keep ids and lines in sync
+                        _sequence.GetNext(); // Bump the sequence to keep ids and lines in sync
                         _logger.Warning("Unknown record {recordType} : {record}", record.GetType(), record);
                     }
                 }
                 catch (Exception e)
                 {
                     _logger.Error(e, "Error loading record {recordType} : {record}", record.GetType(), record);
-                    throw;    // Initially blowup as want to learn about errors.
+                    throw; // Initially blowup as want to learn about errors.
                     //TODO Change to continue processing when know more about errors
-                }              
+                }
             }
+        }
 
+        private void LoadIntoDatabase()
+        {
             foreach (var loader in _recordLoaders)
             {
                 loader.Load(null);

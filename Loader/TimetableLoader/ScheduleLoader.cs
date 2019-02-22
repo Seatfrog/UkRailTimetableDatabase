@@ -50,11 +50,11 @@ namespace TimetableLoader
         /// <summary>
         /// Create the DataTable to load the records into
         /// </summary>
-        public void CreateDataTable()
+        public void Initialise()
         {
-            _schedules.CreateDataTable();
-            _locations.CreateDataTable();
-            _changes.CreateDataTable();
+            _schedules.Initialise();
+            _locations.Initialise();
+            _changes.Initialise();
         }
 
         /// <summary>

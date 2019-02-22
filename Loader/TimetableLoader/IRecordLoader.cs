@@ -6,6 +6,10 @@ namespace TimetableLoader
     public interface IRecordLoader
     {
         /// <summary>
+        /// Create the DataTable to load the records into
+        /// </summary>
+        void Initialise();
+        /// <summary>
         /// Add a record to the DataTable
         /// </summary>
         /// <param name="record"></param>

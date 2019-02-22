@@ -27,7 +27,7 @@ namespace TimetableLoader
         /// <summary>
         /// Create the DataTable to load the records into
         /// </summary>
-        internal void CreateDataTable()
+        public void Initialise()
         {
             var table = new DataTable();
 
@@ -55,16 +55,27 @@ namespace TimetableLoader
                 try
                 {
                     bulk.DestinationTableName = TableName;
+                    bulk.BatchSize = 500;
+                    bulk.NotifyAfter = 10000;
+                    bulk.SqlRowsCopied +=
+                        new SqlRowsCopiedEventHandler(OnSqlRowsCopied);
                     bulk.WriteToServer(Table);
+                    _logger.Information("Loaded {table}", TableName);
                 }
                 catch (Exception ex)
                 {
-                    Serilog.Log.Error(ex, "Error loading schedules");
+                    _logger.Error(ex, "Error loading schedules");
                     throw;
                 }
             }
         }
 
+        protected void OnSqlRowsCopied(
+            object sender, SqlRowsCopiedEventArgs e)
+        {
+            _logger.Information("{table} Copied {count} so far...", TableName, e.RowsCopied);
+        }
+        
         protected long SetNewId()
         {
             var newId = _sequence.GetNext();

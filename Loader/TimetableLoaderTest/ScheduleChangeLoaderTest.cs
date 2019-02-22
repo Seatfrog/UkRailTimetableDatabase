@@ -50,7 +50,7 @@ LTPADTON  2349 23503     TF
             {
                 connection.Open();
                 var loader = new ScheduleChangeLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 var table = loader.Table;
 
                 Assert.Equal(19, table.Columns.Count);
@@ -67,7 +67,7 @@ LTPADTON  2349 23503     TF
             {
                 connection.Open();
                 var loader = new ScheduleChangeLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 var schedule = records[0] as Schedule;
                 var change = schedule.Records[7] as ScheduleChange;
@@ -106,7 +106,7 @@ LTPADTON  2349 23503     TF
             {
                 connection.Open();
                 var loader = new ScheduleChangeLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 var schedule = records[0] as Schedule;
                 var change = schedule.Records[7] as ScheduleChange;

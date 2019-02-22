@@ -106,7 +106,7 @@ ZZ                                                                              
             _locations = new ScheduleLocationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
             _changes = new ScheduleChangeLoader(connection, new Sequence(), Substitute.For<ILogger>());
             var loader = new ScheduleLoader(_schedules, _locations, _changes, Substitute.For<ILogger>());
-            loader.CreateDataTable();
+            loader.Initialise();
             return loader;
         }
 

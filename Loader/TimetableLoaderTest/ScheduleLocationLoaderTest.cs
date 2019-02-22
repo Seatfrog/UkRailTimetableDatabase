@@ -41,7 +41,7 @@ LTPLYMTH  2119 00003     TF
             {
                 connection.Open();
                 var loader = new ScheduleLocationLoader(connection, new Sequence(), Substitute.For<IDatabaseIdLookup>(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 var table = loader.Table;
 
                 Assert.Equal(16, table.Columns.Count);
@@ -61,7 +61,7 @@ LTPLYMTH  2119 00003     TF
                 lookup.Find("LISKARD").Returns(34);
                 
                 var loader = new ScheduleLocationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 var schedule = records[0] as Schedule;
                 loader.Add(12, schedule.Records[2] as OriginLocation);
@@ -99,7 +99,7 @@ LTPLYMTH  2119 00003     TF
                 lookup.Find("LISKDGF").Returns(34);
                 
                 var loader = new ScheduleLocationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 var schedule = records[0] as Schedule;
                 loader.Add(12, schedule.Records[3] as IntermediateLocation);
@@ -137,7 +137,7 @@ LTPLYMTH  2119 00003     TF
                 lookup.Find("PLYMTH").Returns(34);
                 
                 var loader = new ScheduleLocationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 var schedule = records[0] as Schedule;
                 loader.Add(12, schedule.Records[9] as TerminalLocation);
@@ -176,7 +176,7 @@ LTPLYMTH  2119 00003     TF
                 lookup.Find(Arg.Any<string>()).Returns(c => sequence.GetNext());
                 
                 var loader = new ScheduleLocationLoader(connection, new Sequence(), lookup, Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 var schedule = records[0] as Schedule;
                 loader.Add(12, schedule.Records[2] as OriginLocation);

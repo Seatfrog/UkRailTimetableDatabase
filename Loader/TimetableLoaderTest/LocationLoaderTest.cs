@@ -35,7 +35,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 var table = loader.Table;
 
                 Assert.Equal(9, table.Columns.Count);
@@ -52,7 +52,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 Assert.True(loader.Add(records[0]));
                 
@@ -78,7 +78,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 
                 Assert.True(loader.Add(records[2]));
 
@@ -104,7 +104,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 
                 Assert.True(loader.Add(records[3]));
 
@@ -130,7 +130,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 
                 Assert.False(loader.Add(records[4]));
 
@@ -148,7 +148,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 foreach (var record in records)
                     loader.Add(record);
@@ -166,7 +166,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 foreach (var record in records)
                     loader.Add(record);
@@ -199,7 +199,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 foreach (var record in records)
                     loader.Add(record);
@@ -218,7 +218,7 @@ AANP19165P183661812151905180000010NPSCRDFCEN2 TO                               P
             {
                 connection.Open();
                 var loader = new LocationLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 foreach (var record in records)
                     loader.Add(record);

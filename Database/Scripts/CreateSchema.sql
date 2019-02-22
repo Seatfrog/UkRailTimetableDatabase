@@ -35,6 +35,7 @@ CREATE TABLE [dbo].[Locations](
 	[NlcDescription] [varchar](16) NULL,
 	[Stanox] [char](5) NULL,
 	[ThreeLetterCode] [char](3) NULL
+	CONSTRAINT PK_Locations PRIMARY KEY ([Id])
 ) ON [PRIMARY]
 GO
 
@@ -66,6 +67,7 @@ CREATE TABLE [dbo].[Schedules](
 	[Toc] [char](2) NULL,
 	[ApplicableTimetable] [bit] NULL,
 	[RetailServiceId] [char](8) NULL
+	CONSTRAINT PK_Schedules PRIMARY KEY ([Id])
 ) ON [PRIMARY]
 GO
 
@@ -86,6 +88,7 @@ CREATE TABLE [dbo].[ScheduleLocations](
 	[EngineeringAllowance] [varchar](2) NULL,
 	[PathingAllowance] [varchar](2) NULL,
 	[PerformanceAllowance] [varchar](2) NULL
+	CONSTRAINT PK_ScheduleLocations PRIMARY KEY ([ScheduleId], [Id])
 ) ON [PRIMARY]
 GO
 
@@ -109,6 +112,7 @@ CREATE TABLE [dbo].[ScheduleChanges](
 	[Branding] [varchar](4) NULL,
 	[EuropeanUic] [char](5) NULL,
 	[RetailServiceId] [char](8) NULL
+	CONSTRAINT PK_ScheduleChanges PRIMARY KEY ([ScheduleId], [Id])
 ) ON [PRIMARY]
 GO
 
@@ -127,5 +131,6 @@ CREATE TABLE [dbo].[Associations](
 	[MainSequence] [int] NOT NULL,
 	[AssociatedSequence] [int] NOT NULL,
 	[AssociationType] [char](1) NULL
+	CONSTRAINT PK_Associations PRIMARY KEY ([Id])
 ) ON [PRIMARY]
 GO

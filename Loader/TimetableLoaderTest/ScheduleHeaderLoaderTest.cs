@@ -53,7 +53,7 @@ BSDY31280191027                                                                P
             {
                 connection.Open();
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 var table = loader.Table;
 
                 Assert.Equal(27, table.Columns.Count);
@@ -70,7 +70,7 @@ BSDY31280191027                                                                P
             {
                 connection.Open();
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 var schedule = records[0] as Schedule;
                 loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
@@ -115,7 +115,7 @@ BSDY31280191027                                                                P
             {
                 connection.Open();
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 
                 var schedule = records[1] as Schedule;
                 loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
@@ -160,7 +160,7 @@ BSDY31280191027                                                                P
             {
                 connection.Open();
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
                 
                 var schedule = records[2] as Schedule;
                 loader.Add(schedule.GetId(), schedule.GetScheduleDetails(), schedule.GetScheduleExtraDetails());
@@ -186,7 +186,7 @@ BSDY31280191027                                                                P
             {
                 connection.Open();
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 var ids = new List<long>();
                 foreach (var record in records)
@@ -209,7 +209,7 @@ BSDY31280191027                                                                P
             {
                 connection.Open();
                 var loader = new ScheduleHeaderLoader(connection, new Sequence(), Substitute.For<ILogger>());
-                loader.CreateDataTable();
+                loader.Initialise();
 
                 foreach (var record in records)
                 {
