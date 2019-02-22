@@ -1,34 +1,43 @@
 use Timetable;
 
-select *
-from locations;
+select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, count(*)
+from locations l
+inner join schedulelocations sl on l.id = sl.locationid
+where l.ThreeLetterCode = 'WAT'
+or l.nlc like '5598%'
+group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode
+UNION 
+select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, 0
+from locations l
+where l.ThreeLetterCode = 'WAT'
+or l.nlc like '5598%';
 
-select *
-from schedules s
-where s.id < 25;
+select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, count(*)
+from locations l
+inner join schedulelocations sl on l.id = sl.locationid
+where l.ThreeLetterCode = 'SUR'
+or l.nlc like '5571%'
+group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode;
 
 select *
 from schedulelocations sl
 inner join locations l on l.id = sl.locationid
 where sl.scheduleid < 25;
 
-select count(*), l.id, l.TipLoc, l.Description
+select count(*), l.id, l.TipLoc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
 from schedulelocations sl
 inner join locations l on l.id = sl.locationid
-group by l.id, l.TipLoc, l.Description
-order by l.tiploc;
+group by l.id, l.TipLoc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
+order by l.nlc;
 
-select l.id, l.TipLoc, l.Description, s.id, s.TimetableUid, sl.id, sl.scheduleid, c.*
-from schedulechanges c
-inner join schedules s on s.id = c.scheduleid 
-inner join schedulelocations sl on c.schedulelocationId = sl.id
+select s.id, s.TimetableUid, s.StpIndicator, s.runsfrom, s.RunsTo, s.DayMask, s.toc, l.tiploc, l.description, l.nlc, l.threelettercode, sl.*
+from schedules s 
+inner join schedulelocations sl on sl.scheduleId = s.id
 inner join locations l on l.id = sl.locationid
-where s.TimetableUid = 'U49566'
-order by c.id;
+left outer join schedulechanges c on s.id = c.scheduleid 
+where s.TimetableUid IN ('C10037', 'C10188')
+order by sl.id;
 
 
-select *
-from schedules s
-where (NOT s.Action = 'D')
-	AND (NOT s.StpIndicator = 'C')
-	AND (s.Toc is null or s.Toc = '');
+select top 10 *
+from associations;
