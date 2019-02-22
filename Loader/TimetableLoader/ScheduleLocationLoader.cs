@@ -17,10 +17,12 @@ namespace TimetableLoader
         private readonly IDatabaseIdLookup _lookup;
 
         protected override string TableName => "ScheduleLocations";
+        
         internal ScheduleLocationLoader(SqlConnection connection, Sequence sequence, IDatabaseIdLookup lookup, ILogger logger) :
             base(connection, sequence, logger)
         {
             _lookup = lookup;
+            LogBatchSize = 100000;
         }
 
         internal long Add(long scheduleId, IntermediateLocation location)

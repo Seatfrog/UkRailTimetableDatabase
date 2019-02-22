@@ -43,6 +43,9 @@ namespace TimetableLoader
 
             Table = table;
         }
+
+        protected int BatchSize = 500;
+        protected int LogBatchSize = 10000;
         
         /// <summary>
         /// Load the DataTable into the database
@@ -55,8 +58,8 @@ namespace TimetableLoader
                 try
                 {
                     bulk.DestinationTableName = TableName;
-                    bulk.BatchSize = 500;
-                    bulk.NotifyAfter = 10000;
+                    bulk.BatchSize = BatchSize;
+                    bulk.NotifyAfter = LogBatchSize;
                     bulk.SqlRowsCopied +=
                         new SqlRowsCopiedEventHandler(OnSqlRowsCopied);
                     bulk.WriteToServer(Table);
@@ -73,7 +76,7 @@ namespace TimetableLoader
         protected void OnSqlRowsCopied(
             object sender, SqlRowsCopiedEventArgs e)
         {
-            _logger.Information("{table} Copied {count} so far...", TableName, e.RowsCopied);
+            _logger.Information("{table} Loaded {count}", TableName, e.RowsCopied);
         }
         
         protected long GetNewId()
