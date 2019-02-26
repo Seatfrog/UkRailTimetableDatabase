@@ -12,7 +12,7 @@ It assumes its connecting to a local database using integrated security and the 
 
 ## Limitations
 
-The solution `TimetableLoader.sln` contains 4 projects, the 2 in this repo plus those from the CifParser repo.  It assumes that the CifParser repo has been cloned as a sibling of the `UkRailTimetableDatabase` repo.  At some point I will look to change this to either referencve Nuget packages or do it as a git submodule.
+The solution `TimetableLoader.sln` contains 4 projects, the 2 in this repo plus those from the CifParser repo.  It assumes that the CifParser repo has been cloned as a sibling of the `UkRailTimetableDatabase` repo.  At some point I will look to change this to either reference Nuget packages or do it as a git submodule.
 
 ## Limitations
 
@@ -25,6 +25,6 @@ There are assumptions built into the loader that imply loading daily deltas file
 
 ## Database Ids = cif file line number
 
-Due to the way database Ids are generated it created a quite nice unintended consequence that the Id is actually the line number of the record in the cif file.  There is no guarentee this will always be the case.
+Due to the way database Ids are generated it created a quite nice unintended consequence that the Id is actually the line number of the record in the cif file.  There is no guarantee this will always be the case.
 
 
