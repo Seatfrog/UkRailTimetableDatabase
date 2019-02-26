@@ -1,41 +1,30 @@
-# CifParser
-A .Net Standard 2.0 Library to parse a CIF formatted UK rail timetable
+# UK Rail Timetable Database + loader
+A SQL Server database schema to load a UK timetable into plus a .Net Core app to load the data.  The loader reads a full CIF timetable file into the database
 
-## How do I read a CIF file?
+## How do I load a CIF file?
 
-Instantiate a Parser and Read to be returned an enumeration of CIF records.  Records are returned in the order they appear in the file.
+The `runLoader.ps1` script will create the schema (deleting any existing tables and data), load a timetable and then add some indices to the database.
 
-```
-var parser = new Parser();
-var records = parser.Read(file);
-```
+It assumes its connecting to a local database using integrated security and the database is called Timetable.
+`runLoader.ps1` and `Loader/Timetable/appSettings.json` need to be updated with any different connection details 
 
-## Grouping Schedule records.
+`runLoadFullNrodFile.bat` shows how to call `runloader.ps1`
 
-You can group a set of schedule records together into a `Schedule`.
-A schedule comprises a list of records in order:
-* A `ScheduleDetails` record (BS)
-* A `ScheduleDetailsExtraData` record (BX)
-* An `OriginLocation` record (LO)
-* Zero or more `IntermediateLocation` records (LI) in journey sequence
-* Possibly `ScheduleChange` record(s) (CR).  These proceed the location record where the change occurs
-* A `TerminalLocation` record (LT)
+## Limitations
 
-```
-var parser = new ScheduleConsolidator(new Parser());;
-var records = parser.Read(file);
+The solution `TimetableLoader.sln` contains 4 projects, the 2 in this repo plus those from the CifParser repo.  It assumes that the CifParser repo has been cloned as a sibling of the `UkRailTimetableDatabase` repo.  At some point I will look to change this to either referencve Nuget packages or do it as a git submodule.
 
-var schedule = records.OfType<Schedule>().First();
-foreach(var scheduleRecord in schedule.Records)
-{
-	...
-}
-```
+## Limitations
 
-where a record is not part of a schdule e.g. `Association` it is immediately returned.
+Currently the loader has assumptions that it is reading in a full CIF in the format supplied by National Rail Open Data (NROD).
 
-## Implementation Details, why return `IEnumerable<ICifRecord>`?
+Work in progress to load an RDG open data full timetable archive.
 
-It reads the CIF file record by record, yielding to the client once it has constructed a record.  This means it does not need to hold the whole set of records in memory at any time.
+There are assumptions built into the loader that imply loading daily deltas files is problematic (it generates Ids during load, would need to select out of the database).  I don't intend to implement this functionality given a full file is available everyday from NROD.
 
-The implementation uses the [FileHelpers](https://www.filehelpers.net/) package to do most of the heavy lifting to acheive this.
+
+## Database Ids = cif file line number
+
+Due to the way database Ids are generated it created a quite nice unintended consequence that the Id is actually the line number of the record in the cif file.  There is no guarentee this will always be the case.
+
+
