@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Security.Cryptography.X509Certificates;
 
 namespace TimetableLoader
 {
@@ -16,7 +15,7 @@ namespace TimetableLoader
         public const string RdgCifExtension = ".MCA";
 
         public TextReader ExtractCif(string file)
-        {
+        {           
             var fileStream = File.OpenRead(file);
             var decompressionStream = new GZipStream(fileStream, CompressionMode.Decompress);
             return new StreamReader(decompressionStream);

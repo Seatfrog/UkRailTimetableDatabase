@@ -3,7 +3,9 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using CommandLine;
 
 namespace TimetableLoader
@@ -37,13 +39,14 @@ namespace TimetableLoader
                 var factory = new Factory(config, Log.Logger);
                 var loader = factory.Create();
               
-                Log.Information("Uncompress, Parse and Load timetable");
+                Log.Information("Uncompress, Parse and Load timetable: {file}", opts.TimetableFile);
                 loader.Run(opts);
                 Log.Information("{file} loaded", opts.TimetableFile);
             }
             catch (Exception e)
             {
                 Log.Fatal(e, "Processing failed for {file}", opts.TimetableFile);
+                Debugger.Break();
                 throw;
             }
         }
