@@ -11,6 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CifParser", "..\..\CifParse
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CifParserTest", "..\..\CifParser\CIfParserTest\CifParserTest.csproj", "{773F1B97-345E-4B1C-AACA-1FF46CD9D1E9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoadScripts", "LoadScripts", "{72C0B1EF-00EC-4D27-AF35-7D0312921337}"
+ProjectSection(SolutionItems) = preProject
+	runLoader.ps1 = runLoader.ps1
+	runLoadFullNrodFile.bat = runLoadFullNrodFile.bat
+	runLoadFullRdgFile.bat = runLoadFullRdgFile.bat
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

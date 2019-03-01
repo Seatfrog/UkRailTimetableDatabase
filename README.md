@@ -5,10 +5,13 @@ A SQL Server database schema to load a UK timetable into plus a .Net Core app to
 
 The `runLoader.ps1` script will create the schema (deleting any existing tables and data), load a timetable and then add some indices to the database.
 
-It assumes its connecting to a local database using integrated security and the database is called Timetable.
+It assumes its connecting to an existing local database using integrated security and the database is called Timetable.
+`CreateDatabase.sql` will create the physical database in the default location.
+
 `runLoader.ps1` and `Loader/Timetable/appSettings.json` need to be updated with any different connection details 
 
-`runLoadFullNrodFile.bat` shows how to call `runloader.ps1`
+* `runLoadFullNrodFile.bat` shows how to call `runloader.ps1` for a Network Rail cif file.
+* `runLoadFullRdgFile.bat` shows how to call `runloader.ps1` for a RDG cif file.
 
 ## Limitations
 
