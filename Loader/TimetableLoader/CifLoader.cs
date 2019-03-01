@@ -17,7 +17,7 @@ namespace TimetableLoader
             using (var connection = _factory.CreateConnection())
             {
                 connection.Open();
-                var reader = _factory.CreateExtractor().ExtractCif(options.TimetableFile);
+                var reader = _factory.CreateExtractor().ExtractCif(options.TimetableArchiveFile);
                 var records = _factory.CreateParser().Read(reader);
                 var loader = _factory.CreateLoader(connection);
                 loader.Load(records);                

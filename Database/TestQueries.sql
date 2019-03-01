@@ -50,18 +50,39 @@ from locations l
 where l.ThreeLetterCode = 'VXH'
 or l.nlc like '5597%' or l.Stanox = '87214' or l.Description like '%VAUXHALL%';
 
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*)
-from locations l
-inner join schedulelocations sl on l.id = sl.locationid
-where l.ThreeLetterCode = 'CLJ'
-or l.nlc like '5595%' or l.Stanox = '87219' or l.Description like '%CLAPHAM J%'
+select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, sum(l.stops)
+from (
+	select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*) stops
+	from locations l
+	inner join schedulelocations sl on l.id = sl.locationid
+	where l.ThreeLetterCode = 'CLJ'
+	or l.nlc like '5595%' or l.Stanox = '87219' or l.Description like '%CLAPHAM J%'
+	group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
+	UNION 
+	select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
+	from locations l
+	where l.ThreeLetterCode = 'CLJ'
+	or l.nlc like '5595%' or l.Stanox = '87219' or l.Description like '%CLAPHAM J%') l
 group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
-UNION 
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
-from locations l
-where l.ThreeLetterCode = 'CLJ'
-or l.nlc like '5595%' or l.Stanox = '87219' or l.Description like '%CLAPHAM J%';
+order by l.nlc;
 
+select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, sum(l.stops)
+from (
+	select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*) as stops
+	from locations l
+	inner join schedulelocations sl on l.id = sl.locationid
+	where l.nlc like '1291%' or l.nlc like '1292%'	-- Lichfield Trent valley
+	group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
+	UNION 
+	select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
+	from locations l
+	where l.nlc like '1291%'  or l.nlc like '1292%') l
+group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
+order by l.nlc;
+
+select *
+from locations l
+where description like '%LICH%' or ThreeLetterCode = 'LTV';
 
 select top 100 *
 from schedulelocations sl

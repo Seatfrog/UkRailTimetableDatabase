@@ -20,17 +20,22 @@ namespace TimetableLoader
     internal class Factory : IFactory
     {
         private readonly IConfiguration _config;
+        private readonly Options _options;
         private readonly ILogger _logger;
         
-        public string ConnectionString => _config["connection"];    
+        private string ConnectionString => _config["connection"];    
         
-        internal Factory(IConfiguration config, ILogger logger)
+        internal Factory(IConfiguration config, Options options, ILogger logger)
         {
             _config = config;
+            _options = options;
             _logger = logger;
         }    
         
-        public IExtractor CreateExtractor() => new ZipExtractor();
+        public IExtractor CreateExtractor() => _options.IsRdgZip ? 
+            (IExtractor) new RdgZipExtractor(_logger) :
+            new NrodZipExtractor();
+        
         public IParser CreateParser() => new ScheduleConsolidator(new Parser(_logger), _logger);
         public SqlConnection CreateConnection() => new SqlConnection(ConnectionString);
 

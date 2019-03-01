@@ -1,19 +1,20 @@
 using System;
 using System.IO;
+using NSubstitute;
+using Serilog;
 using TimetableLoader;
 using Xunit;
 
 namespace TimetableLoaderTest
 {
-    public class ZipExtractorTest
+    public class NrodZipExtractorTest
     {
         public const string cifGzipFile = @".\Data\toc-update-tue.CIF.gz";
-        public const string rdgZipFile = @".\Data\ttis144.zip";
                
         [Fact]
         public void CanReadCifFile()
         {
-            var extractor = new ZipExtractor();
+            var extractor = new NrodZipExtractor();
 
             using (var reader = extractor.ExtractCif(cifGzipFile))
             {
@@ -21,13 +22,30 @@ namespace TimetableLoaderTest
                 Assert.NotEmpty(first);
             }
         }
+    }
+    
+    public class RdgZipExtractorTest
+    {
+        public const string rdgZipFile = @".\Data\ttis144.zip";
+               
+        [Fact]
+        public void CanReadCifFile()
+        {
+            var extractor = new RdgZipExtractor(Substitute.For<ILogger>());
+
+            using (var reader = extractor.ExtractCif(rdgZipFile))
+            {
+                var first = reader.ReadLine();
+                Assert.NotEmpty(first);
+            }
+        }
        
         [Fact]
-        public void CanReadRdgZipFile()
+        public void CanReadStationFile()
         {
-            var extractor = new ZipExtractor();
+            var extractor = new RdgZipExtractor(Substitute.For<ILogger>());
 
-            using (var reader = extractor.ExtractRdg(rdgZipFile, ".MSN"))
+            using (var reader = extractor.ExtractRdgArchiveFile(rdgZipFile, RdgZipExtractor.StationExtension))
             {
                 var first = reader.ReadLine();
                 Assert.NotNull(first);

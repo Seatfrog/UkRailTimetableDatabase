@@ -1,24 +1,25 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using Serilog;
 
 namespace TimetableLoader
 {
-    public interface IExtractor
+    internal class RdgZipExtractor : IExtractor
     {
-        TextReader ExtractCif(string file);
-        TextReader ExtractRdg(string file, string extension = ZipExtractor.RdgCifExtension);
-    }
+        public const string CifExtension = ".MCA";
+        public const string StationExtension = ".MSN";
+        
+        private readonly ILogger _logger;
 
-    internal class ZipExtractor : IExtractor
-    {
-        public const string RdgCifExtension = ".MCA";
-
+        public RdgZipExtractor(ILogger logger)
+        {
+            _logger = logger;
+        }
+        
         public TextReader ExtractCif(string file)
         {           
-            var fileStream = File.OpenRead(file);
-            var decompressionStream = new GZipStream(fileStream, CompressionMode.Decompress);
-            return new StreamReader(decompressionStream);
+            return ExtractRdgArchiveFile(file, CifExtension);
         }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace TimetableLoader
         /// <param name="file">RDG timtable zip archive - ttisnnn.zip </param>
         /// <param name="extension">The file inside the archive to extract</param>
         /// <returns>A reader to read the file</returns>
-        public TextReader ExtractRdg(string file, string extension = RdgCifExtension)
+        public TextReader ExtractRdgArchiveFile(string file, string extension)
         {
             var archive = ZipFile.OpenRead(file);
 
@@ -35,6 +36,7 @@ namespace TimetableLoader
             {
                 if (entry.FullName.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
                 {
+                    _logger.Information("Loading {file}", entry.FullName);
                     var s = entry.Open();
                     return new StreamReader(s);
                 }

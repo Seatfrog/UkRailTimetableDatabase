@@ -14,7 +14,7 @@ namespace TimetableLoaderTest
     internal static class ParserHelper
     {
         private static readonly Factory _factory = 
-            new Factory(Substitute.For<IConfiguration>(), Substitute.For<ILogger>());
+            new Factory(Substitute.For<IConfiguration>(), new Options(), Substitute.For<ILogger>());
         
         public static ICifRecord[] ParseRecords(string data)
         {

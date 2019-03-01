@@ -36,16 +36,16 @@ namespace TimetableLoader
             try
             {
                 Log.Information("Configure Loader");
-                var factory = new Factory(config, Log.Logger);
+                var factory = new Factory(config, opts, Log.Logger);
                 var loader = factory.Create();
               
-                Log.Information("Uncompress, Parse and Load timetable: {file}", opts.TimetableFile);
+                Log.Information("Uncompress, Parse and Load timetable: {file}", opts.TimetableArchiveFile);
                 loader.Run(opts);
-                Log.Information("{file} loaded", opts.TimetableFile);
+                Log.Information("{file} loaded", opts.TimetableArchiveFile);
             }
             catch (Exception e)
             {
-                Log.Fatal(e, "Processing failed for {file}", opts.TimetableFile);
+                Log.Fatal(e, "Processing failed for {file}", opts.TimetableArchiveFile);
                 Debugger.Break();
                 throw;
             }
