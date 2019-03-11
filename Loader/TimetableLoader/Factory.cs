@@ -22,6 +22,7 @@ namespace TimetableLoader
         private readonly IConfiguration _config;
         private readonly Options _options;
         private readonly ILogger _logger;
+        private readonly IParserFactory _factory;
         
         private string ConnectionString => _config["connection"];    
         
@@ -30,13 +31,14 @@ namespace TimetableLoader
             _config = config;
             _options = options;
             _logger = logger;
+            _factory = new ConsolidatorFactory(_logger);
         }    
         
         public IExtractor CreateExtractor() => _options.IsRdgZip ? 
             (IExtractor) new RdgZipExtractor(_logger) :
             new NrodZipExtractor();
         
-        public IParser CreateParser() => new ScheduleConsolidator(new Parser(_logger), _logger);
+        public IParser CreateParser() => _factory.CreateParser();
         public SqlConnection CreateConnection() => new SqlConnection(ConnectionString);
 
         public ILoader CreateLoader(SqlConnection connection)
