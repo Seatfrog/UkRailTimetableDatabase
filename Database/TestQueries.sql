@@ -94,11 +94,11 @@ inner join locations l on l.id = sl.locationid
 group by l.id, l.TipLoc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
 order by l.nlc;
 
-select s.id, s.TimetableUid, s.StpIndicator, s.runsfrom, s.RunsTo, s.DayMask, s.toc, l.tiploc, l.description, l.nlc, l.threelettercode, sl.*
+select s.id, s.TimetableUid, s.RetailServiceId, s.StpIndicator, s.runsfrom, s.RunsTo, s.DayMask, s.toc, l.tiploc, l.description, l.nlc, l.threelettercode, sl.*
 from schedules s 
 inner join schedulelocations sl on sl.scheduleId = s.id
 inner join locations l on l.id = sl.locationid
-where  s.id IN (281856, 282019, 433574, 433429) --  s.id IN (281856, 282019, 433574, 433429) s.TimetableUid IN ('C10037', 'C10188')
+where  s.TimetableUid IN ('C60436', 'C60602', 'C61577') --  s.id IN (281856, 282019, 433574, 433429) s.TimetableUid IN ('C60436', 'C61577')
 order by sl.id;
 
 select s.toc, s.Status, s.Category, count(*)
@@ -109,12 +109,33 @@ order by s.toc, s.Status, s.Category;
 select s.Status, s.StpIndicator, count(*)
 from Schedules s
 group by s.Status, s.StpIndicator
-order by s.Status, s.StpIndicator desc;
+order by s.StpIndicator desc, s.Status;
 
 select top 10 *
 from schedules s
 where s.status is null;
 
-
 select top 10 *
-from associations;
+from associations a
+inner join locations l on l.Id = a.LocationId;
+
+select s.tiploc, s.ThreeLetterCode, s.SubsidiaryThreeLetterCode, s.Description, l.tiploc, l.ThreeLetterCode, l.Description
+from stations s
+full join locations l on l.TipLoc = s.TipLoc
+where l.tiploc is null and not (s.Description like '%CIE%' OR s.Description like '%MTLK%')
+-- where s.TipLoc is null or l.tiploc is null
+order by s.Description, l.Description;
+
+select s.tiploc, s.ThreeLetterCode, s.SubsidiaryThreeLetterCode, s.Description, l.tiploc, l.ThreeLetterCode, l.Description
+from stations s
+inner join locations l on l.TipLoc = s.TipLoc
+where l.ThreeLetterCode <> s.ThreeLetterCode
+-- where s.TipLoc is null or l.tiploc is null
+order by s.Description, l.Description;
+
+select s.tiploc, s.ThreeLetterCode, s.SubsidiaryThreeLetterCode, s.Description, l.tiploc, l.ThreeLetterCode, l.Description
+from stations s
+full join locations l on l.TipLoc = s.TipLoc
+where l.ThreeLetterCode IN ('SCG', 'WIJ', 'CRE', 'SFA', 'TAM', 'WAT')  OR s.ThreeLetterCode IN ('SCG', 'WIJ', 'CRE', 'SFA', 'TAM', 'WAT')
+-- where s.TipLoc is null or l.tiploc is null
+order by s.Description, l.Description;

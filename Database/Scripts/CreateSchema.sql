@@ -16,6 +16,9 @@ GO
 DROP TABLE IF EXISTS [dbo].[Locations]
 GO
 
+DROP TABLE IF EXISTS [dbo].[Stations]
+GO
+
 USE [Timetable]
 GO
 
@@ -132,5 +135,20 @@ CREATE TABLE [dbo].[Associations](
 	[AssociatedSequence] [int] NOT NULL,
 	[AssociationType] [char](1) NULL
 	CONSTRAINT PK_Associations PRIMARY KEY ([Id])
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[Stations](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[TipLoc] [varchar](7) NOT NULL,
+	[Description] [varchar](30) NOT NULL,
+	[InterchangeStatus] [tinyint] NOT NULL,
+	[ThreeLetterCode] [char](3) NOT NULL,
+	[SubsidiaryThreeLetterCode] [char](3) NOT NULL,
+	[Eastings] [int] NOT NULL,
+	[Northings] [int] NOT NULL,
+	[LocationIsEstimated] [bit] NOT NULL,
+	[MinimumChangeTime] [tinyint] NOT NULL,
+	CONSTRAINT PK_Stations PRIMARY KEY ([Id])
 ) ON [PRIMARY]
 GO
