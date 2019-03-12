@@ -23,7 +23,7 @@ namespace TimetableLoader
     /// <description>CreateDataTable<see cref="CreateDataTable" /></description>
     /// </item>
     /// <item>
-    /// <description>Add<see cref="Add(ICifRecord)" /> the records</description>
+    /// <description>Add<see cref="Add(IRecord)" /> the records</description>
     /// </item>
     /// <item>
     /// <description>Load<see cref="Load"/> to upload the records to the database</description>
@@ -61,8 +61,8 @@ namespace TimetableLoader
         /// Add a record to the DataTable
         /// </summary>
         /// <param name="record"></param>
-        /// <returns>Database Id</returns>
-        public bool Add(ICifRecord record)
+        /// <returns>Success</returns>
+        public bool Add(IRecord record)
         {
             switch (record)
             {
@@ -85,7 +85,7 @@ namespace TimetableLoader
             Add(databaseId, schedule.Records.Skip(skip));
         }
         
-        private void Add(long scheduleId, IEnumerable<ICifRecord> records)
+        private void Add(long scheduleId, IEnumerable<IRecord> records)
         {
             ScheduleChange previous = null;
             

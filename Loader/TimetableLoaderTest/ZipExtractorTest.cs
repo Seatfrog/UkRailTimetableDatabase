@@ -45,7 +45,7 @@ namespace TimetableLoaderTest
         {
             var extractor = new RdgZipExtractor(Substitute.For<ILogger>());
 
-            using (var reader = extractor.ExtractRdgArchiveFile(rdgZipFile, RdgZipExtractor.StationExtension))
+            using (var reader = extractor.ExtractFile(rdgZipFile, RdgZipExtractor.StationExtension))
             {
                 var first = reader.ReadLine();
                 Assert.NotNull(first);

@@ -1,5 +1,5 @@
 using System.Data.SqlClient;
-using CifParser.Records;
+using CifParser;
 
 namespace TimetableLoader
 {
@@ -14,7 +14,7 @@ namespace TimetableLoader
         /// </summary>
         /// <param name="record"></param>
         /// <returns>Whether added record</returns>
-        bool Add(ICifRecord record);
+        bool Add(IRecord record);
 
         /// <summary>
         /// Load the DataTable into the database

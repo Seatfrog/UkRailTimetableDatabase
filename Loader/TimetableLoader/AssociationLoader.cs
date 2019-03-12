@@ -23,7 +23,7 @@ namespace TimetableLoader
             _lookup = lookup;
         }
 
-        public bool Add(ICifRecord record)
+        public bool Add(IRecord record)
         {
             switch (record)
             {

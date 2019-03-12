@@ -37,7 +37,7 @@ namespace TimetableLoader
             {
                 Log.Information("Configure Loader");
                 var factory = new Factory(config, opts, Log.Logger);
-                var loader = factory.Create();
+                var loader = factory.CreateCifLoader();
               
                 Log.Information("Uncompress, Parse and Load timetable: {file}", opts.TimetableArchiveFile);
                 loader.Run(opts);

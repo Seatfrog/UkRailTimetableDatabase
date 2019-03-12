@@ -5,7 +5,12 @@ using Serilog;
 
 namespace TimetableLoader
 {
-    internal class RdgZipExtractor : IExtractor
+    public interface IArchiveFileExtractor
+    {
+        TextReader ExtractFile(string file, string extension);
+    }
+    
+    internal class RdgZipExtractor : IExtractor, IArchiveFileExtractor
     {
         public const string CifExtension = ".MCA";
         public const string StationExtension = ".MSN";
@@ -19,7 +24,7 @@ namespace TimetableLoader
         
         public TextReader ExtractCif(string file)
         {           
-            return ExtractRdgArchiveFile(file, CifExtension);
+            return ExtractFile(file, CifExtension);
         }
 
         /// <summary>
@@ -28,7 +33,7 @@ namespace TimetableLoader
         /// <param name="file">RDG timtable zip archive - ttisnnn.zip </param>
         /// <param name="extension">The file inside the archive to extract</param>
         /// <returns>A reader to read the file</returns>
-        public TextReader ExtractRdgArchiveFile(string file, string extension)
+        public TextReader ExtractFile(string file, string extension)
         {
             var archive = ZipFile.OpenRead(file);
 

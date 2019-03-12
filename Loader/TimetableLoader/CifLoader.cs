@@ -3,7 +3,12 @@ using CifParser;
 
 namespace TimetableLoader
 {
-    internal class CifLoader
+    public interface IFileLoader
+    {
+        void Run(Options options);
+    }
+
+    internal class CifLoader : IFileLoader
     {
         private IFactory _factory;
 
@@ -14,14 +19,24 @@ namespace TimetableLoader
 
         public void Run(Options options)
         {
-            using (var connection = _factory.CreateConnection())
+            using (var db = _factory.CreateDatabase())
             {
-                connection.Open();
-                var reader = _factory.CreateExtractor().ExtractCif(options.TimetableArchiveFile);
-                var records = _factory.CreateParser().Read(reader);
-                var loader = _factory.CreateLoader(connection);
-                loader.Load(records);                
+                db.OpenConnection();
+                LoadCif(options, db);
+                if (options.IsRdgZip)
+                {
+                    var stationLoader = _factory.CreateStationLoader(db);
+                    stationLoader.Run(options);
+                }
             }
+        }
+
+        private void LoadCif(Options options, IDatabase db)
+        {
+            var reader = _factory.CreateExtractor().ExtractCif(options.TimetableArchiveFile);
+            var records = _factory.CreateParser().Read(reader);
+            var loader = db.CreateCifLoader();
+            loader.Load(records);
         }
     }
 }
