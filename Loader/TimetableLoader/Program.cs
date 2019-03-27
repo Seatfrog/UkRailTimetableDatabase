@@ -35,8 +35,8 @@ namespace TimetableLoader
         {
             try
             {
-                Log.Information("Configure Loader");
                 var loaderConfig = new LoaderConfig(config, opts);
+                Log.Information("Configure Loader: {config}", loaderConfig);
                 var factory = new Factory(loaderConfig, Log.Logger);
                 var loader = factory.CreateCifLoader();
               

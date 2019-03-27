@@ -38,5 +38,10 @@ namespace TimetableLoader
                 return connString;
             }
         }
+
+        public override string ToString()
+        {
+            return $"{TimetableArchiveFile}, {ConnectionString}, IsRdgZip: {IsRdgZip}";
+        }
     }
 }

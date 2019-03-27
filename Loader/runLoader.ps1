@@ -8,11 +8,13 @@ param(
 # Invoke-Sqlcmd -Database -InputFile .\Database\Scripts\CreateTimetable.sql
 # Invoke-Sqlcmd -Database -InputFile .\Database\Scripts\CreateTimetableRdg.sql
 
-Write-Host "Create tables - $database"
-Invoke-Sqlcmd -Database $database -InputFile "..\Database\Scripts\CreateSchema.sql"
+Write-Host "Create tables - $database";
+Invoke-Sqlcmd -Database $database -InputFile "..\Database\Scripts\CreateSchema.sql";
 
-Write-Host "Load $cifFile - $database"
-Start-Process -FilePath 'dotnet' -Wait -ArgumentList ".\TimetableLoader\bin\Debug\netcoreapp2.2\TimetableLoader.dll -i $cifFile -r $isRdgArchive -d $database"
+Write-Host "Load $cifFile - $database  IsRdgZip: $isRdgArchive"
+$isRdgZipFlag = if ($isRdgArchive) {"-r"} else {""};
 
-Write-Host "Add indices - $database"
-Invoke-Sqlcmd -Database $database -InputFile ..\Database\Scripts\CreateIndices.sql
+Start-Process -FilePath 'dotnet' -Wait -ArgumentList ".\TimetableLoader\bin\Debug\netcoreapp2.2\TimetableLoader.dll -i $cifFile $isRdgZipFlag -d $database";
+
+Write-Host "Add indices - $database";
+Invoke-Sqlcmd -Database $database -InputFile ..\Database\Scripts\CreateIndices.sql;
