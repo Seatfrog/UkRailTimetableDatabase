@@ -1,6 +1,3 @@
-USE [Timetable]
-GO
-
 SET ANSI_PADDING ON
 GO
 

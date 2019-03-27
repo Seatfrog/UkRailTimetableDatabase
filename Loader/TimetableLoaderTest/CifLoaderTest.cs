@@ -9,14 +9,18 @@ namespace TimetableLoaderTest
     public class CifLoaderTest
     {
         private const string TestArchive = "Dummy.zip";
-        
-        private readonly Options TestOptions = new Options()
+
+        private ILoaderConfig TestConfig
         {
-            TimetableArchiveFile = TestArchive,
-            IsRdgZip = true
-        };
-        
-        
+            get
+            {
+                var config = Substitute.For<ILoaderConfig>();
+                config.TimetableArchiveFile.Returns(TestArchive);
+                config.IsRdgZip.Returns(true);
+                return config;
+            }
+        }
+
         [Fact]
         public void LoadsCifFile()
         {
@@ -26,7 +30,7 @@ namespace TimetableLoaderTest
             
             var loader = new CifLoader(factory);
 
-            loader.Run(TestOptions);
+            loader.Run(TestConfig);
             
             extractor.Received().ExtractCif(TestArchive);
         }
@@ -43,12 +47,11 @@ namespace TimetableLoaderTest
             
             var loader = new CifLoader(factory);
 
-            var options = new Options()
-            {
-                TimetableArchiveFile = TestArchive,
-                IsRdgZip = false
-            };
-            loader.Run(options);
+            var config = Substitute.For<ILoaderConfig>();
+            config.TimetableArchiveFile.Returns(TestArchive);
+            config.IsRdgZip.Returns(false);
+
+            loader.Run(config);
             
             extractor.DidNotReceive().ExtractFile(Arg.Any<string>(), RdgZipExtractor.StationExtension);
         }
@@ -78,7 +81,7 @@ namespace TimetableLoaderTest
             
             var loader = new CifLoader(factory);
 
-            loader.Run(TestOptions);
+            loader.Run(TestConfig);
             
             extractor.Received().ExtractFile(TestArchive, RdgZipExtractor.StationExtension);
         }

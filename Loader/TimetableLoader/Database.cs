@@ -15,19 +15,15 @@ namespace TimetableLoader
 
     internal class Database : IDatabase
     {
-        private readonly IConfiguration _config;
+        private readonly string _connectionString;
         private readonly ILogger _logger;
-        private SqlConnection _connection;
-        
-        private string ConnectionString => _config["connection"];
+        private SqlConnection _connection;      
 
-        internal Database(IConfiguration config, ILogger logger)
+        internal Database(string connectionString, ILogger logger)
         {
-            _config = config;
+            _connectionString = connectionString;
             _logger = logger;
         }
-
-        public SqlConnection CreateConnection() => new SqlConnection(ConnectionString);
 
         public IDatabaseLoader CreateCifLoader()
         {
@@ -75,7 +71,7 @@ namespace TimetableLoader
 
         public void OpenConnection()
         {
-            _connection = new SqlConnection(ConnectionString);
+            _connection = new SqlConnection(_connectionString);
             _connection.Open();
         }
     }

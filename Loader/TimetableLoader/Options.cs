@@ -10,5 +10,8 @@ namespace TimetableLoader
         
         [Option('r', "isRdgZip", Required = false, Default = false, HelpText = "Archive Type")]
         public bool IsRdgZip { get; set; }
+        
+        [Option('d', "database", Required = false, Default = "", HelpText = "Database to connect to")]
+        public string Database { get; set; }
     }
 }

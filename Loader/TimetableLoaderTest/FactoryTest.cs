@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using Serilog;
 using TimetableLoader;
@@ -11,11 +10,10 @@ namespace TimetableLoaderTest
         [Fact]
         public void ConstructNrodExtractor()
         {
-            var options = new Options()
-            {
-                IsRdgZip = false
-            };
-            var factory = new Factory(Substitute.For<IConfiguration>(), options, Substitute.For<ILogger>());
+            var config = Substitute.For<ILoaderConfig>();
+            config.IsRdgZip.Returns(false);
+            
+            var factory = new Factory(config, Substitute.For<ILogger>());
             
             var extractor = factory.CreateExtractor();
 
@@ -25,11 +23,10 @@ namespace TimetableLoaderTest
         [Fact]
         public void ConstructRdgExtractor()
         {
-            var options = new Options()
-            {
-                IsRdgZip = true
-            };
-            var factory = new Factory(Substitute.For<IConfiguration>(), options, Substitute.For<ILogger>());
+            var config = Substitute.For<ILoaderConfig>();
+            config.IsRdgZip.Returns(true);
+            
+            var factory = new Factory(config, Substitute.For<ILogger>());
             
             var extractor = factory.CreateExtractor();
 

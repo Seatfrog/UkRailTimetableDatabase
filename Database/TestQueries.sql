@@ -1,17 +1,5 @@
 use Timetable;
 
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, count(*)
-from locations l
-inner join schedulelocations sl on l.id = sl.locationid
-where l.ThreeLetterCode = 'WAT'
-or l.nlc like '5598%'
-group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode
-UNION 
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, 0
-from locations l
-where l.ThreeLetterCode = 'WAT'
-or l.nlc like '5598%';
-
 select distinct l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
 from locations l
 left outer join schedulelocations sl on l.id = sl.locationid
@@ -26,59 +14,44 @@ where l.ThreeLetterCode = 'SUR'
 or l.nlc like '5571%'
 group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode;
 
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*)
-from locations l
-inner join schedulelocations sl on l.id = sl.locationid
-where l.ThreeLetterCode = 'STP'
-or l.nlc like '1555%' or l.nlc like '1540%' or l.Stanox = '63630' or l.Description like '%PANCRAS%'
-group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
-UNION 
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
-from locations l
-where l.ThreeLetterCode = 'STP'
-or l.nlc like '1555%' or l.nlc like '1540%' or l.Stanox = '63630' or l.Description like '%PANCRAS%';
-
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*)
-from locations l
-inner join schedulelocations sl on l.id = sl.locationid
-where l.ThreeLetterCode = 'VXH'
-or l.nlc like '5597%' or l.Stanox = '87214' or l.Description like '%VAUXHALL%'
-group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
-UNION 
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
-from locations l
-where l.ThreeLetterCode = 'VXH'
-or l.nlc like '5597%' or l.Stanox = '87214' or l.Description like '%VAUXHALL%';
-
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, sum(l.stops)
+select stationId, stationCrs, stationName, stationTiploc, id, tiploc, nlc, Stanox, ThreeLetterCode, Description, sum(stops)
 from (
-	select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*) stops
-	from locations l
+	select s.Id as stationId, s.ThreeLetterCode as stationCrs, s.Description as stationName, s.TipLoc as stationTiploc, 
+	l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*) stops
+	from stations s
+	inner join locations l on s.Tiploc = l.TipLoc
 	inner join schedulelocations sl on l.id = sl.locationid
 	where l.ThreeLetterCode = 'CLJ'
 	or l.nlc like '5595%' or l.Stanox = '87219' or l.Description like '%CLAPHAM J%'
-	group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
+	group by s.Id, s.ThreeLetterCode, s.Description, s.TipLoc, l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
 	UNION 
-	select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
-	from locations l
+	select s.Id, s.ThreeLetterCode, s.Description, s.TipLoc, l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
+	from stations s
+	inner join locations l on s.Tiploc = l.TipLoc
 	where l.ThreeLetterCode = 'CLJ'
 	or l.nlc like '5595%' or l.Stanox = '87219' or l.Description like '%CLAPHAM J%') l
-group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
-order by l.nlc;
+group by stationId, stationCrs, stationName, stationTiploc, id, tiploc, nlc, Stanox, ThreeLetterCode, Description
+order by nlc;
 
-select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, sum(l.stops)
+select stationId, stationCrs, stationName, stationTiploc, id, tiploc, nlc, Stanox, ThreeLetterCode, Description, sum(stops)
 from (
-	select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*) as stops
-	from locations l
+	select s.Id as stationId, s.ThreeLetterCode as stationCrs, s.Description as stationName, s.TipLoc as stationTiploc, 
+	l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, count(*) stops
+	from stations s
+	inner join locations l on s.Tiploc = l.TipLoc
 	inner join schedulelocations sl on l.id = sl.locationid
-	where l.nlc like '1291%' or l.nlc like '1292%'	-- Lichfield Trent valley
-	group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
+	where s.ThreeLetterCode = 'LTV'
+	or l.nlc like '1291%' or l.nlc like '1292%'	-- Lichfield Trent valley
+	group by s.Id, s.ThreeLetterCode, s.Description, s.TipLoc, l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
 	UNION 
-	select l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
-	from locations l
-	where l.nlc like '1291%'  or l.nlc like '1292%') l
-group by l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description
-order by l.nlc;
+	select s.Id, s.ThreeLetterCode, s.Description, s.TipLoc, l.id, l.tiploc, l.nlc, l.Stanox, l.ThreeLetterCode, l.Description, 0
+	from stations s
+	inner join locations l on s.Tiploc = l.TipLoc
+	where s.ThreeLetterCode = 'LTV'
+	or l.nlc like '1291%' or l.nlc like '1292%') l
+group by stationId, stationCrs, stationName, stationTiploc, id, tiploc, nlc, Stanox, ThreeLetterCode, Description
+order by nlc;
+
 
 select *
 from locations l
@@ -136,6 +109,6 @@ order by s.Description, l.Description;
 select s.tiploc, s.ThreeLetterCode, s.SubsidiaryThreeLetterCode, s.Description, l.tiploc, l.ThreeLetterCode, l.Description
 from stations s
 full join locations l on l.TipLoc = s.TipLoc
-where l.ThreeLetterCode IN ('SCG', 'WIJ', 'CRE', 'SFA', 'TAM', 'WAT')  OR s.ThreeLetterCode IN ('SCG', 'WIJ', 'CRE', 'SFA', 'TAM', 'WAT')
+where l.ThreeLetterCode IN ('SCG', 'WIJ', 'CRE', 'SFA', 'TAM', 'WAT', 'LTV')  OR s.ThreeLetterCode IN ('SCG', 'WIJ', 'CRE', 'SFA', 'TAM', 'WAT', 'LTV')
 -- where s.TipLoc is null or l.tiploc is null
 order by s.Description, l.Description;

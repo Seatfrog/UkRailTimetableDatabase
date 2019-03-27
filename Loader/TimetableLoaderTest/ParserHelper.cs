@@ -15,7 +15,7 @@ namespace TimetableLoaderTest
     internal static class ParserHelper
     {
         private static readonly Factory _factory = 
-            new Factory(Substitute.For<IConfiguration>(), new Options(), Substitute.For<ILogger>());
+            new Factory(Substitute.For<ILoaderConfig>(), Substitute.For<ILogger>());
 
         private static readonly TtisParserFactory _ttisFactory = 
             new TtisParserFactory(Substitute.For<ILogger>());

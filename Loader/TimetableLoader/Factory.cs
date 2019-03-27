@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
-using CifParser;
-using Microsoft.Extensions.Configuration;
+﻿using CifParser;
 using Serilog;
 
 namespace TimetableLoader
 {
     public interface IFactory
     {
-        IFileLoader CreateCifLoader();
         IExtractor CreateExtractor();
         IParser CreateParser();
         IDatabase CreateDatabase();
@@ -19,16 +13,14 @@ namespace TimetableLoader
 
     internal class Factory : IFactory
     {
-        private readonly IConfiguration _config;
-        private readonly Options _options;
+        private readonly ILoaderConfig _config;
         private readonly ILogger _logger;
         private readonly IParserFactory _factory;
         private readonly TtisParserFactory _ttisFactory;
 
-        internal Factory(IConfiguration config, Options options, ILogger logger)
+        internal Factory(ILoaderConfig config, ILogger logger)
         {
             _config = config;
-            _options = options;
             _logger = logger;
             _factory = new ConsolidatorFactory(_logger);
             _ttisFactory = new TtisParserFactory(_logger);
@@ -40,11 +32,11 @@ namespace TimetableLoader
         }
         
         public IExtractor CreateExtractor() =>
-            _options.IsRdgZip ? (IExtractor) new RdgZipExtractor(_logger) : new NrodZipExtractor();
+            _config.IsRdgZip ? (IExtractor) new RdgZipExtractor(_logger) : new NrodZipExtractor();
 
         public IParser CreateParser() => _factory.CreateParser();
         
-        public IDatabase CreateDatabase() => new Database(_config, _logger);
+        public IDatabase CreateDatabase() => new Database(_config.ConnectionString, _logger);
 
         public IFileLoader CreateStationLoader(IDatabase db)
         {

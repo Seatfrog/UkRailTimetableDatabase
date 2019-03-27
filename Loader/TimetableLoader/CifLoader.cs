@@ -5,7 +5,7 @@ namespace TimetableLoader
 {
     public interface IFileLoader
     {
-        void Run(Options options);
+        void Run(ILoaderConfig config);
     }
 
     internal class CifLoader : IFileLoader
@@ -17,23 +17,23 @@ namespace TimetableLoader
             _factory = factory;
         }
 
-        public void Run(Options options)
+        public void Run(ILoaderConfig config)
         {
             using (var db = _factory.CreateDatabase())
             {
                 db.OpenConnection();
-                LoadCif(options, db);
-                if (options.IsRdgZip)
+                LoadCif(config.TimetableArchiveFile, db);
+                if (config.IsRdgZip)
                 {
                     var stationLoader = _factory.CreateStationLoader(db);
-                    stationLoader.Run(options);
+                    stationLoader.Run(config);
                 }
             }
         }
 
-        private void LoadCif(Options options, IDatabase db)
+        private void LoadCif(string file, IDatabase db)
         {
-            var reader = _factory.CreateExtractor().ExtractCif(options.TimetableArchiveFile);
+            var reader = _factory.CreateExtractor().ExtractCif(file);
             var records = _factory.CreateParser().Read(reader);
             var loader = db.CreateCifLoader();
             loader.Load(records);

@@ -1,6 +1,3 @@
-USE [Timetable]
-GO
-
 DROP TABLE IF EXISTS [dbo].[Associations]
 GO
 
@@ -17,9 +14,6 @@ DROP TABLE IF EXISTS [dbo].[Locations]
 GO
 
 DROP TABLE IF EXISTS [dbo].[Stations]
-GO
-
-USE [Timetable]
 GO
 
 SET ANSI_NULLS ON

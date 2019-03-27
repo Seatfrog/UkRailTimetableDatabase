@@ -36,17 +36,17 @@ namespace TimetableLoader
             try
             {
                 Log.Information("Configure Loader");
-                var factory = new Factory(config, opts, Log.Logger);
+                var loaderConfig = new LoaderConfig(config, opts);
+                var factory = new Factory(loaderConfig, Log.Logger);
                 var loader = factory.CreateCifLoader();
               
                 Log.Information("Uncompress, Parse and Load timetable: {file}", opts.TimetableArchiveFile);
-                loader.Run(opts);
+                loader.Run(loaderConfig);
                 Log.Information("{file} loaded", opts.TimetableArchiveFile);
             }
             catch (Exception e)
             {
                 Log.Fatal(e, "Processing failed for {file}", opts.TimetableArchiveFile);
-                Debugger.Break();
                 throw;
             }
         }
@@ -76,7 +76,7 @@ namespace TimetableLoader
                 .WriteTo.Console()
                 .WriteTo.File(@"TimetableLoader-.log",
                     outputTemplate:
-                    "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u4}] {Message:lj} {Exception} {Properties}{NewLine}",
+                    "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u4}] {Message:lj} {Exception} {Properties:j}{NewLine}",
                     rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
