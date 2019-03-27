@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CifParser\CifExtractor\CifExtractor.csproj" />
     <ProjectReference Include="..\..\..\CifParser\CifParser\CifParser.csproj" />
   </ItemGroup>
 

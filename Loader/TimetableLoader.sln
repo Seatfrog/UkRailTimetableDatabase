@@ -18,6 +18,10 @@ ProjectSection(SolutionItems) = preProject
 	runLoadFullRdgFile.bat = runLoadFullRdgFile.bat
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CifExtractor", "..\..\CifParser\CifExtractor\CifExtractor.csproj", "{D396439D-1E14-4520-B1C6-CF8DB5531E3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CifExtractorTest", "..\..\CifParser\CifExtractorTest\CifExtractorTest.csproj", "{F7DCDF3F-4933-40FB-93E6-48EA26165445}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +44,14 @@ Global
 		{773F1B97-345E-4B1C-AACA-1FF46CD9D1E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{773F1B97-345E-4B1C-AACA-1FF46CD9D1E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{773F1B97-345E-4B1C-AACA-1FF46CD9D1E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D396439D-1E14-4520-B1C6-CF8DB5531E3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D396439D-1E14-4520-B1C6-CF8DB5531E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D396439D-1E14-4520-B1C6-CF8DB5531E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D396439D-1E14-4520-B1C6-CF8DB5531E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7DCDF3F-4933-40FB-93E6-48EA26165445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7DCDF3F-4933-40FB-93E6-48EA26165445}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7DCDF3F-4933-40FB-93E6-48EA26165445}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7DCDF3F-4933-40FB-93E6-48EA26165445}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

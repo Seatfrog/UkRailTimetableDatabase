@@ -1,5 +1,3 @@
-use Timetable;
-
 truncate table associations;
 truncate table schedulechanges;
 truncate table schedulelocations;

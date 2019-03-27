@@ -2,13 +2,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace TimetableLoader
 {
-    public interface ILoaderConfig
-    {
-        string TimetableArchiveFile { get; }
-        bool IsRdgZip { get; }
-        string ConnectionString { get; }
-    }
-
     internal class LoaderConfig : ILoaderConfig
     {
         private readonly IConfiguration _appSettings;

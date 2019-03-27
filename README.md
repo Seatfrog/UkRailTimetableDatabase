@@ -15,7 +15,7 @@ It assumes its connecting to an existing local database using integrated securit
 
 ## Development Dependencies
 
-The solution `TimetableLoader.sln` contains 4 projects, the 2 in this repo plus those from the CifParser repo.  It assumes that the CifParser repo has been cloned as a sibling of the `UkRailTimetableDatabase` repo.  At some point I will look to change this to either reference Nuget packages or do it as a git submodule.
+The solution `TimetableLoader.sln` contains 6 projects, the 2 in this repo plus those from the CifParser repo.  It assumes that the CifParser repo has been cloned as a sibling of the `UkRailTimetableDatabase` repo.  At some point I will look to change this to either reference Nuget packages or do it as a git submodule.
 
 ## Limitations
 

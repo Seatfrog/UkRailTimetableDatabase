@@ -1,4 +1,5 @@
 using System;
+using CifExtractor;
 using CifParser;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
