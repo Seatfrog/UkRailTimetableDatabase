@@ -1,5 +1,6 @@
 select *
-from  stations;
+from  stations s
+where s.threelettercode IN ('WAT', 'SUR');
 
 select s.ThreeLetterCode, s.TipLoc, s.Description, count(*)
 from Associations a
