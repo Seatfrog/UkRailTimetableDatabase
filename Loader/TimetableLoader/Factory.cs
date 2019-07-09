@@ -9,7 +9,7 @@ namespace TimetableLoader
         IExtractor CreateExtractor();
         IParser CreateParser();
         IDatabase CreateDatabase();
-        IFileLoader CreateStationLoader(IDatabase db);
+        //IFileLoader CreateStationLoader(IDatabase db);
     }
 
     internal class Factory : IFactory
@@ -17,14 +17,14 @@ namespace TimetableLoader
         private readonly ILoaderConfig _config;
         private readonly ILogger _logger;
         private readonly IParserFactory _factory;
-        private readonly TtisParserFactory _ttisFactory;
+        //private readonly TtisParserFactory _ttisFactory;
 
         internal Factory(ILoaderConfig config, ILogger logger)
         {
             _config = config;
             _logger = logger;
             _factory = new ConsolidatorFactory(_logger);
-            _ttisFactory = new TtisParserFactory(_logger);
+            //_ttisFactory = new TtisParserFactory(_logger); 
         }
 
         public IFileLoader CreateCifLoader()
@@ -39,13 +39,13 @@ namespace TimetableLoader
         
         public IDatabase CreateDatabase() => new Database(_config.ConnectionString, _logger);
 
-        public IFileLoader CreateStationLoader(IDatabase db)
-        {
-            var extractor = new RdgZipExtractor(_logger);
-            var parser = _ttisFactory.CreateStationParser();
-            var loader = db.CreateStationLoader();
+        //public IFileLoader CreateStationLoader(IDatabase db)
+        //{
+        //    var extractor = new RdgZipExtractor(_logger);
+        //    //var parser = _ttisFactory.CreateStationParser();
+        //    var loader = db.CreateStationLoader();
 
-            return new MasterStationFileLoader(extractor, parser, loader);
-        }
+        //    return new MasterStationFileLoader(extractor, parser, loader);
+        //}
     }
 }

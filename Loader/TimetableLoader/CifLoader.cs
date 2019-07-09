@@ -23,11 +23,11 @@ namespace TimetableLoader
             {
                 db.OpenConnection();
                 LoadCif(config.TimetableArchiveFile, db);
-                if (config.IsRdgZip)
-                {
-                    var stationLoader = _factory.CreateStationLoader(db);
-                    stationLoader.Run(config);
-                }
+                //if (config.IsRdgZip)
+                //{
+                //    var stationLoader = _factory.CreateStationLoader(db);
+                //    stationLoader.Run(config);
+                //}
             }
         }
 
